@@ -14,6 +14,8 @@
     "start": "node dist/index.js",
     "keygen": "node dist/cli/keygen.js",
     "test": "vitest run",
+    "bundle": "node scripts/bundle.js",
+    "pack:extension": "npm run build && npm run bundle && node scripts/pack-extension.js",
     "prepare": "npm run build"
   },
   "keywords": [
@@ -32,6 +34,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.2.2",
+    "esbuild": "^0.25",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"
   }

@@ -18,6 +18,16 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for in
 
 ## Quick Start
 
+### Option A: Desktop Extension (recommended)
+
+1. Download the latest `panos-mcp.mcpb` from [Releases](https://github.com/apius-tech/Palo-MCP/releases)
+2. Double-click the file — Claude Desktop opens an install dialog
+3. Enter your **Firewall Host** and **API Key** when prompted
+
+The API key is stored securely in your OS keychain, not in plaintext config files.
+
+### Option B: npx
+
 No installation needed — run directly from GitHub with `npx`.
 
 Open your Claude Desktop MCP configuration file:
