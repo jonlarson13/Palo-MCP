@@ -61,8 +61,8 @@ export function resolveFirewall(name?: string): FirewallEntry | null {
   }
 
   // No config entries — fall back to env vars
-  const host = process.env.PANOS_HOST;
-  const api_key = process.env.PANOS_API_KEY;
+  const host = (process.env.PANOS_HOST ?? "").trim();
+  const api_key = (process.env.PANOS_API_KEY ?? "").trim();
   if (host && api_key) {
     return { name: "env", host, api_key };
   }
@@ -84,13 +84,21 @@ export function getFirewallEntries(): FirewallEntry[] {
 }
 
 export async function resolveCredentials(): Promise<void> {
-  // If API key is already set or no credentials provided, nothing to do
-  if (process.env.PANOS_API_KEY) return;
+  // Trim env vars — template variables may resolve to empty strings or whitespace
+  const apiKey = (process.env.PANOS_API_KEY ?? "").trim();
+  const host = (process.env.PANOS_HOST ?? "").trim();
+  const username = (process.env.PANOS_USERNAME ?? "").trim();
+  const password = (process.env.PANOS_PASSWORD ?? "").trim();
 
-  const host = process.env.PANOS_HOST;
-  const username = process.env.PANOS_USERNAME;
-  const password = process.env.PANOS_PASSWORD;
-  if (!host || !username || !password) return;
+  // If API key is already set, nothing to do
+  if (apiKey) return;
+
+  if (!host || !username || !password) {
+    if (host && !apiKey && (username || password)) {
+      console.error("Credentials incomplete: both username and password are required");
+    }
+    return;
+  }
 
   // Dynamic import to avoid circular dependency
   const { generateApiKey } = await import("../api/client.js");
