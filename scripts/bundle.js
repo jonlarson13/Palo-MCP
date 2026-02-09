@@ -2,13 +2,11 @@ import { build } from "esbuild";
 
 await build({
   entryPoints: ["dist/index.js"],
-  outfile: "extension/server/index.js",
+  outfile: "extension/server/index.cjs",
   bundle: true,
   platform: "node",
-  format: "esm",
+  format: "cjs",
   target: "node18",
-  banner: { js: "#!/usr/bin/env node" },
-  external: [],
 });
 
-console.log("Bundle created: extension/server/index.js");
+console.log("Bundle created: extension/server/index.cjs");

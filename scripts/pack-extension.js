@@ -5,7 +5,7 @@ import { execSync } from "child_process";
 cpSync("manifest.json", "extension/manifest.json");
 
 // Create .mcpb zip from extension/ contents
-execSync("cd extension && zip -r ../panos-mcp.mcpb manifest.json server/index.js");
+execSync("cd extension && zip -r ../panos-mcp.mcpb manifest.json server/index.cjs");
 
 // Clean up the extension directory
 rmSync("extension", { recursive: true, force: true });

@@ -6,10 +6,10 @@
   "author": { "name": "Apius Tech" },
   "server": {
     "type": "node",
-    "entry_point": "server/index.js",
+    "entry_point": "server/index.cjs",
     "mcp_config": {
       "command": "node",
-      "args": ["${__dirname}/server/index.js"],
+      "args": ["${__dirname}/server/index.cjs"],
       "env": {
         "PANOS_HOST": "${user_config.host}",
         "PANOS_API_KEY": "${user_config.api_key}",
