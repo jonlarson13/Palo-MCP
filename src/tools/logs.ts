@@ -1,7 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
 import { executeOpCommand, formatResponse } from "../api/client.js";
-import { nlogsSchema } from "../schemas/panos.js";
+import { nlogsSchema, logQuery } from "../schemas/panos.js";
 
 export function registerLogsTools(server: McpServer) {
   server.tool(
@@ -9,7 +8,7 @@ export function registerLogsTools(server: McpServer) {
     "[READ-ONLY] Retrieves recent traffic logs from the firewall. Executes: show log traffic. Supports filtering by query and limiting result count.",
     {
       nlogs: nlogsSchema,
-      query: z.string().max(2048).optional().describe("Filter query (e.g., '( addr.src in 10.0.0.0/8 )')"),
+      query: logQuery.describe("Filter query (e.g., '( addr.src in 10.0.0.0/8 )')"),
     },
     async ({ nlogs, query }) => {
       const limit = nlogs || 20;
@@ -28,7 +27,7 @@ export function registerLogsTools(server: McpServer) {
     "[READ-ONLY] Retrieves recent threat logs from the firewall. Executes: show log threat. Supports filtering by query and limiting result count.",
     {
       nlogs: nlogsSchema,
-      query: z.string().max(2048).optional().describe("Filter query (e.g., '( severity eq critical )')"),
+      query: logQuery.describe("Filter query (e.g., '( severity eq critical )')"),
     },
     async ({ nlogs, query }) => {
       const limit = nlogs || 20;
@@ -47,7 +46,7 @@ export function registerLogsTools(server: McpServer) {
     "[READ-ONLY] Retrieves recent system logs from the firewall. Executes: show log system. Supports filtering by query and limiting result count.",
     {
       nlogs: nlogsSchema,
-      query: z.string().max(2048).optional().describe("Filter query (e.g., '( severity eq critical )')"),
+      query: logQuery.describe("Filter query (e.g., '( severity eq critical )')"),
     },
     async ({ nlogs, query }) => {
       const limit = nlogs || 20;
@@ -66,7 +65,7 @@ export function registerLogsTools(server: McpServer) {
     "[READ-ONLY] Retrieves recent configuration change logs from the firewall. Executes: show log config. Supports filtering by query and limiting result count.",
     {
       nlogs: nlogsSchema,
-      query: z.string().max(2048).optional().describe("Filter query"),
+      query: logQuery.describe("Filter query"),
     },
     async ({ nlogs, query }) => {
       const limit = nlogs || 20;

@@ -1,14 +1,13 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { z } from "zod";
 import { executeOpCommand, getConfig, formatResponse } from "../api/client.js";
-import { configXpath } from "../schemas/panos.js";
+import { configXpath, xmlCommand } from "../schemas/panos.js";
 
 export function registerUtilityTools(server: McpServer) {
   server.tool(
     "run_op_command",
     "[ADVANCED] Executes an arbitrary PanOS operational XML command. The command will be sent directly to the firewall API. Use with caution — the command could be read-only or state-modifying depending on its content.",
     {
-      command: z.string().min(1).startsWith("<").describe("XML operational command to execute (e.g., '<show><system><info></info></system></show>')"),
+      command: xmlCommand.describe("XML operational command to execute (e.g., '<show><system><info></info></system></show>')"),
     },
     async ({ command }) => {
       const result = await executeOpCommand(command);
