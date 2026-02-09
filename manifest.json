@@ -1,7 +1,7 @@
 {
   "manifest_version": "0.3",
   "name": "panos-mcp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "MCP server for Palo Alto Networks PanOS firewalls and Panorama",
   "author": { "name": "Apius Tech" },
   "icon": "icon.png",
