@@ -25,7 +25,11 @@ npm run build
 
 ## Configuration
 
-Set the following environment variables:
+Copy the example environment file and fill in your values:
+
+```bash
+cp .env.example .env
+```
 
 | Variable | Description |
 |----------|-------------|
@@ -87,6 +91,9 @@ npm run dev
 
 # Build
 npm run build
+
+# Run tests
+npm test
 
 # Run the server
 npm run start
