@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { readFileSync, writeFileSync } from "fs";
-import { resolve } from "path";
+import { readFileSync, writeFileSync, mkdirSync } from "fs";
+import { resolve, join, dirname } from "path";
+import { homedir } from "os";
 
 export interface FirewallEntry {
   name: string;
@@ -20,9 +21,14 @@ const firewallConfigSchema = z.object({
 
 let entries: FirewallEntry[] = [];
 
+const defaultConfigPath = join(homedir(), ".config", "panos-mcp", "firewalls.json");
+
+export function getConfigPath(): string {
+  return process.env.PANOS_FIREWALLS_CONFIG ?? defaultConfigPath;
+}
+
 export function loadFirewallConfig(): void {
-  const configPath = process.env.PANOS_FIREWALLS_CONFIG
-    ?? resolve("firewalls.json");
+  const configPath = getConfigPath();
 
   let raw: string;
   try {
@@ -72,8 +78,8 @@ export function getFirewallEntries(): FirewallEntry[] {
 }
 
 export function saveFirewallEntry(entry: FirewallEntry): void {
-  const configPath = process.env.PANOS_FIREWALLS_CONFIG
-    ?? resolve("firewalls.json");
+  const configPath = getConfigPath();
+  mkdirSync(dirname(configPath), { recursive: true });
 
   let config: { firewalls: FirewallEntry[] };
   try {

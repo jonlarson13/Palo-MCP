@@ -81,11 +81,9 @@ Every tool is labeled to indicate its impact:
 
 ## Multi-Firewall Support
 
-By default the server connects to a single firewall using `PANOS_HOST` and `PANOS_API_KEY` environment variables. To manage multiple firewalls from a single MCP server instance, create a `firewalls.json` file:
+By default the server connects to a single firewall using `PANOS_HOST` and `PANOS_API_KEY` environment variables. To manage multiple firewalls from a single MCP server instance, create a `firewalls.json` config file.
 
-```bash
-cp firewalls.json.example firewalls.json
-```
+The default config path is `~/.config/panos-mcp/firewalls.json` — this works reliably regardless of how the server is launched (including via `npx`). You can override it with the `PANOS_FIREWALLS_CONFIG` environment variable.
 
 ```json
 {
@@ -95,8 +93,6 @@ cp firewalls.json.example firewalls.json
   ]
 }
 ```
-
-The config file path can be customized via the `PANOS_FIREWALLS_CONFIG` environment variable.
 
 ### Resolution logic
 
