@@ -14,6 +14,8 @@
       "env": {
         "PANOS_HOST": "${user_config.host}",
         "PANOS_API_KEY": "${user_config.api_key}",
+        "PANOS_USERNAME": "${user_config.username}",
+        "PANOS_PASSWORD": "${user_config.password}",
         "PANOS_FIREWALLS_CONFIG": "${user_config.config_dir}/firewalls.json"
       }
     }
@@ -103,9 +105,22 @@
     "api_key": {
       "type": "string",
       "title": "API Key",
-      "description": "PanOS API key (generate with: npx panos-mcp keygen)",
+      "description": "PanOS API key — provide this OR username + password below",
       "sensitive": true,
-      "required": true
+      "required": false
+    },
+    "username": {
+      "type": "string",
+      "title": "Username",
+      "description": "PanOS admin username (used to auto-generate API key if no key provided)",
+      "required": false
+    },
+    "password": {
+      "type": "string",
+      "title": "Password",
+      "description": "PanOS admin password (used to auto-generate API key if no key provided)",
+      "sensitive": true,
+      "required": false
     },
     "config_dir": {
       "type": "directory",

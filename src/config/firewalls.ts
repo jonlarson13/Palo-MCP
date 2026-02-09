@@ -20,6 +20,7 @@ const firewallConfigSchema = z.object({
 });
 
 let entries: FirewallEntry[] = [];
+let cachedCredentialKey: string | null = null;
 
 const defaultConfigPath = join(homedir(), ".config", "panos-mcp", "firewalls.json");
 
@@ -66,6 +67,11 @@ export function resolveFirewall(name?: string): FirewallEntry | null {
     return { name: "env", host, api_key };
   }
 
+  // No API key — try auto-keygen from username/password (set by resolveCredentials)
+  if (host && cachedCredentialKey) {
+    return { name: "env", host, api_key: cachedCredentialKey };
+  }
+
   return null;
 }
 
@@ -75,6 +81,26 @@ export function isMultiFirewall(): boolean {
 
 export function getFirewallEntries(): FirewallEntry[] {
   return entries;
+}
+
+export async function resolveCredentials(): Promise<void> {
+  // If API key is already set or no credentials provided, nothing to do
+  if (process.env.PANOS_API_KEY) return;
+
+  const host = process.env.PANOS_HOST;
+  const username = process.env.PANOS_USERNAME;
+  const password = process.env.PANOS_PASSWORD;
+  if (!host || !username || !password) return;
+
+  // Dynamic import to avoid circular dependency
+  const { generateApiKey } = await import("../api/client.js");
+  const result = await generateApiKey(host, username, password);
+  if (result.success && result.data?.key) {
+    cachedCredentialKey = result.data.key;
+    console.error(`API key generated from credentials for ${host}`);
+  } else {
+    console.error(`Failed to generate API key: ${result.error}`);
+  }
 }
 
 export function saveFirewallEntry(entry: FirewallEntry): void {
