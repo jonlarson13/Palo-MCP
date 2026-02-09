@@ -18,7 +18,7 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for in
 
 ## Quick Start
 
-### Option A: Desktop Extension (recommended)
+### Claude Desktop — Desktop Extension (recommended)
 
 1. Download the latest `panos-mcp.mcpb` from [Releases](https://github.com/apius-tech/Palo-MCP/releases)
 2. Double-click the file — Claude Desktop opens an install dialog
@@ -26,21 +26,9 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for in
 
 The API key is stored securely in your OS keychain, not in plaintext config files.
 
-### Option B: npx
+### Claude Desktop — npx
 
-No installation needed — run directly from GitHub with `npx`.
-
-Open your Claude Desktop MCP configuration file:
-
-```bash
-# macOS
-open "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
-
-# Windows
-notepad "%APPDATA%\Claude\claude_desktop_config.json"
-```
-
-Add the `panos` server entry:
+Add to your `claude_desktop_config.json`:
 
 ```json
 {
@@ -57,9 +45,55 @@ Add the `panos` server entry:
 }
 ```
 
-Replace `your-firewall-or-panorama` with your firewall/Panorama IP or hostname, and `your-api-key` with your PanOS API key.
+Config file location: **macOS** `~/Library/Application Support/Claude/claude_desktop_config.json` · **Windows** `%APPDATA%\Claude\claude_desktop_config.json`
 
-Restart Claude Desktop — the PanOS tools will be available immediately.
+### Cursor
+
+Open Cursor Settings (Ctrl+Shift+J) → MCP → Add new MCP server, or add to `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "panos": {
+      "command": "npx",
+      "args": ["-y", "github:apius-tech/Palo-MCP"],
+      "env": {
+        "PANOS_HOST": "your-firewall-or-panorama",
+        "PANOS_API_KEY": "your-api-key"
+      }
+    }
+  }
+}
+```
+
+### Windsurf
+
+Add to `~/.codeium/windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "panos": {
+      "command": "npx",
+      "args": ["-y", "github:apius-tech/Palo-MCP"],
+      "env": {
+        "PANOS_HOST": "your-firewall-or-panorama",
+        "PANOS_API_KEY": "your-api-key"
+      }
+    }
+  }
+}
+```
+
+### Claude Code (CLI)
+
+```bash
+claude mcp add panos -- npx -y github:apius-tech/Palo-MCP \
+  --env PANOS_HOST=your-firewall-or-panorama \
+  --env PANOS_API_KEY=your-api-key
+```
+
+Replace `your-firewall-or-panorama` with your firewall/Panorama IP or hostname, and `your-api-key` with your PanOS API key.
 
 ## Tool Categories
 
