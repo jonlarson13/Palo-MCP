@@ -16,36 +16,23 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for in
 - A PanOS firewall or Panorama appliance with API access enabled
 - A PanOS API key ([how to generate](https://docs.paloaltonetworks.com/pan-os/11-1/pan-os-panorama-api/get-started-with-the-pan-os-xml-api/get-your-api-key))
 
-## Installation
+## Quick Start
 
-```bash
-npm install
-npm run build
-```
+No installation needed — run directly from GitHub with `npx`.
 
-## Configuration
+Add to your Claude Desktop MCP configuration file:
 
-Copy the example environment file and fill in your values:
-
-```bash
-cp .env.example .env
-```
-
-| Variable | Description |
-|----------|-------------|
-| `PANOS_HOST` | Firewall or Panorama hostname/IP |
-| `PANOS_API_KEY` | API key for authentication |
-
-## Usage with Claude Desktop
-
-Add to your Claude Desktop MCP configuration (`claude_desktop_config.json`):
+| OS | Config path |
+|----|-------------|
+| macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
 
 ```json
 {
   "mcpServers": {
     "panos": {
-      "command": "node",
-      "args": ["/path/to/panos-mcp/dist/index.js"],
+      "command": "npx",
+      "args": ["-y", "github:apius-tech/Palo-MCP"],
       "env": {
         "PANOS_HOST": "your-firewall-or-panorama",
         "PANOS_API_KEY": "your-api-key"
@@ -54,6 +41,10 @@ Add to your Claude Desktop MCP configuration (`claude_desktop_config.json`):
   }
 }
 ```
+
+Replace `your-firewall-or-panorama` with your firewall/Panorama IP or hostname, and `your-api-key` with your PanOS API key.
+
+Restart Claude Desktop — the PanOS tools will be available immediately.
 
 ## Tool Categories
 
@@ -86,17 +77,17 @@ Every tool is labeled to indicate its impact:
 ## Development
 
 ```bash
-# Watch mode (rebuild on changes)
-npm run dev
+git clone https://github.com/apius-tech/Palo-MCP.git
+cd Palo-MCP
+npm install
+cp .env.example .env   # fill in PANOS_HOST and PANOS_API_KEY
+```
 
-# Build
-npm run build
-
-# Run tests
-npm test
-
-# Run the server
-npm run start
+```bash
+npm run build           # compile TypeScript
+npm run dev             # watch mode (rebuild on changes)
+npm test                # run tests
+npm run start           # run the server
 ```
 
 ## License
