@@ -89,32 +89,6 @@ Every tool is labeled to indicate its impact:
 - **`[MODIFIES CONFIG]`** — Stages or commits configuration changes that affect live traffic
 - **`[ADVANCED]`** — Accepts arbitrary commands; impact depends on the input
 
-## Multi-Firewall Support
-
-By default the server connects to a single firewall using `PANOS_HOST` and `PANOS_API_KEY` environment variables. To manage multiple firewalls from a single MCP server instance, create a `firewalls.json` config file.
-
-The default config path is `~/.config/panos-mcp/firewalls.json` — this works reliably regardless of how the server is launched (including via `npx`). You can override it with the `PANOS_FIREWALLS_CONFIG` environment variable.
-
-```json
-{
-  "firewalls": [
-    { "name": "hq-fw01",     "host": "10.0.1.1", "api_key": "LUFRPT..." },
-    { "name": "branch-fw01", "host": "10.0.2.1", "api_key": "LUFRPT..." }
-  ]
-}
-```
-
-### Resolution logic
-
-| Config state | `firewall` param | Behavior |
-|---|---|---|
-| No `firewalls.json` | omitted | Falls back to `PANOS_HOST`/`PANOS_API_KEY` env vars |
-| Single entry | omitted | Uses that entry automatically |
-| Multiple entries | omitted | **Error** — param is required |
-| Any | provided | Looks up by name |
-
-Use the `list_firewalls` tool to see configured targets and whether the `firewall` parameter is required.
-
 ## API Key
 
 Generate a PanOS API key from the firewall web UI or CLI:
