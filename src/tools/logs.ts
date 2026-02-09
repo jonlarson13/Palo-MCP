@@ -5,7 +5,7 @@ import { executeOpCommand, formatResponse } from "../api/client.js";
 export function registerLogsTools(server: McpServer) {
   server.tool(
     "get_traffic_logs",
-    "Get recent traffic logs from the firewall",
+    "[READ-ONLY] Retrieves recent traffic logs from the firewall. Executes: show log traffic. Supports filtering by query and limiting result count.",
     {
       nlogs: z.number().optional().describe("Number of logs to retrieve (default: 20, max: 5000)"),
       query: z.string().optional().describe("Filter query (e.g., '( addr.src in 10.0.0.0/8 )')"),
@@ -24,7 +24,7 @@ export function registerLogsTools(server: McpServer) {
 
   server.tool(
     "get_threat_logs",
-    "Get recent threat logs from the firewall",
+    "[READ-ONLY] Retrieves recent threat logs from the firewall. Executes: show log threat. Supports filtering by query and limiting result count.",
     {
       nlogs: z.number().optional().describe("Number of logs to retrieve (default: 20, max: 5000)"),
       query: z.string().optional().describe("Filter query (e.g., '( severity eq critical )')"),
@@ -43,7 +43,7 @@ export function registerLogsTools(server: McpServer) {
 
   server.tool(
     "get_system_logs",
-    "Get recent system logs from the firewall",
+    "[READ-ONLY] Retrieves recent system logs from the firewall. Executes: show log system. Supports filtering by query and limiting result count.",
     {
       nlogs: z.number().optional().describe("Number of logs to retrieve (default: 20, max: 5000)"),
       query: z.string().optional().describe("Filter query (e.g., '( severity eq critical )')"),
@@ -62,7 +62,7 @@ export function registerLogsTools(server: McpServer) {
 
   server.tool(
     "get_config_logs",
-    "Get recent configuration change logs from the firewall",
+    "[READ-ONLY] Retrieves recent configuration change logs from the firewall. Executes: show log config. Supports filtering by query and limiting result count.",
     {
       nlogs: z.number().optional().describe("Number of logs to retrieve (default: 20, max: 5000)"),
       query: z.string().optional().describe("Filter query"),

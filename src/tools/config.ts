@@ -5,7 +5,7 @@ import { setConfig, deleteConfig, commitConfig, commitAll, formatResponse } from
 export function registerConfigTools(server: McpServer) {
   server.tool(
     "set_config",
-    "Set configuration at a specific XPath location (creates or updates). Changes are staged until committed.",
+    "[MODIFIES CONFIG] Sets or creates configuration at a specific XPath location on the firewall. Changes are staged in the candidate config and require a separate 'commit' to take effect on the running firewall.",
     {
       xpath: z.string().describe("XPath to the configuration location (e.g., '/config/devices/entry[@name=\"localhost.localdomain\"]/vsys/entry[@name=\"vsys1\"]/address')"),
       element: z.string().describe("XML element to set at the xpath location (e.g., '<entry name=\"test-addr\"><ip-netmask>10.0.0.1/32</ip-netmask></entry>')"),
@@ -18,7 +18,7 @@ export function registerConfigTools(server: McpServer) {
 
   server.tool(
     "delete_config",
-    "Delete configuration at a specific XPath location. Changes are staged until committed.",
+    "[MODIFIES CONFIG] Deletes configuration at a specific XPath location on the firewall. Changes are staged in the candidate config and require a separate 'commit' to take effect.",
     {
       xpath: z.string().describe("XPath to the configuration element to delete (e.g., '/config/devices/entry[@name=\"localhost.localdomain\"]/vsys/entry[@name=\"vsys1\"]/address/entry[@name=\"test-addr\"]')"),
     },
@@ -30,7 +30,7 @@ export function registerConfigTools(server: McpServer) {
 
   server.tool(
     "commit",
-    "Commit pending configuration changes to the firewall",
+    "[MODIFIES CONFIG] Commits all pending (staged) configuration changes to the running firewall. This activates changes made by set_config/delete_config. This action affects live traffic.",
     {
       description: z.string().optional().describe("Optional commit description/comment"),
       partial_admin: z.string().optional().describe("Commit only changes made by this admin user"),
@@ -51,7 +51,7 @@ export function registerConfigTools(server: McpServer) {
 
   server.tool(
     "panorama_push_to_devices",
-    "Push configuration from Panorama to managed devices (Panorama only)",
+    "[MODIFIES CONFIG] Pushes configuration from Panorama to managed firewall devices. This deploys policy and object changes to production firewalls in the specified device group. This action affects live traffic on managed devices.",
     {
       device_group: z.string().describe("Device group name to push to"),
       description: z.string().optional().describe("Optional push description"),
