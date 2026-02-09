@@ -25,7 +25,7 @@ loadFirewallConfig();
 
 const server = new McpServer({
   name: "panos-mcp",
-  version: "1.3.0",
+  version: "1.3.1",
 });
 
 // Register all tools

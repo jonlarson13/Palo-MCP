@@ -1,6 +1,6 @@
 # PanOS MCP Server
 
-An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for interacting with Palo Alto Networks PanOS firewalls and Panorama. Provides 51 tools across 15 modules for firewall management, monitoring, and configuration.
+An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for interacting with Palo Alto Networks PanOS firewalls and Panorama. Provides 70+ tools across 15 modules for firewall management, monitoring, and configuration.
 
 ## Features
 
@@ -79,7 +79,7 @@ Restart Claude Desktop — the PanOS tools will be available immediately.
 | Certificates | 3 | Certificates, decryption rules and profiles |
 | Licenses | 2 | License info and usage |
 | Config | 4 | Set/delete config, commit, Panorama push |
-| Utility | 2 | Arbitrary op commands, XPath config reads |
+| Utility | 3 | Arbitrary op commands, XPath config reads, list firewalls |
 
 ## Safety Labels
 
@@ -115,34 +115,18 @@ The default config path is `~/.config/panos-mcp/firewalls.json` — this works r
 
 Use the `list_firewalls` tool to see configured targets and whether the `firewall` parameter is required.
 
-## API Key Generation
+## API Key
 
-Two ways to generate a PanOS API key:
+Generate a PanOS API key from the firewall web UI or CLI:
 
-### CLI (for quick setup)
+**Web UI:** Device → Administrators → your admin user → Generate API Key
 
+**CLI:**
 ```bash
-# Generate and print the key
-npm run keygen -- --host 10.0.1.1 --user admin
-
-# Generate, print, and save to firewalls.json
-npm run keygen -- --host 10.0.1.1 --user admin --name hq-fw01
+curl -k 'https://YOUR-FIREWALL/api/?type=keygen&user=admin&password=YOUR-PASSWORD'
 ```
 
-The CLI prompts for the password interactively (masked with `*`). The API key is printed to stdout; status messages go to stderr, so you can pipe the key:
-
-```bash
-KEY=$(npm run keygen -- --host 10.0.1.1 --user admin 2>/dev/null)
-```
-
-### MCP Tool (from Claude)
-
-Use the `generate_api_key` tool:
-
-- **host** (required) — firewall hostname or IP
-- **username** (required) — PanOS admin username
-- **password** (required) — PanOS admin password
-- **save_name** (optional) — if provided, saves the entry to `firewalls.json`
+See [PanOS documentation](https://docs.paloaltonetworks.com/pan-os/11-1/pan-os-panorama-api/get-started-with-the-pan-os-xml-api/get-your-api-key) for details.
 
 ## Development
 
@@ -158,6 +142,7 @@ npm run build           # compile TypeScript
 npm run dev             # watch mode (rebuild on changes)
 npm test                # run tests
 npm run start           # run the server
+npm run pack:extension  # build Desktop Extension (.mcpb)
 ```
 
 ## License
