@@ -20,7 +20,6 @@ const firewallConfigSchema = z.object({
 });
 
 let entries: FirewallEntry[] = [];
-let cachedCredentialKey: string | null = null;
 
 const defaultConfigPath = join(homedir(), ".config", "panos-mcp", "firewalls.json");
 
@@ -67,11 +66,6 @@ export function resolveFirewall(name?: string): FirewallEntry | null {
     return { name: "env", host, api_key };
   }
 
-  // No API key — try auto-keygen from username/password (set by resolveCredentials)
-  if (host && cachedCredentialKey) {
-    return { name: "env", host, api_key: cachedCredentialKey };
-  }
-
   return null;
 }
 
@@ -81,10 +75,6 @@ export function isMultiFirewall(): boolean {
 
 export function getFirewallEntries(): FirewallEntry[] {
   return entries;
-}
-
-export function setCachedCredentialKey(key: string): void {
-  cachedCredentialKey = key;
 }
 
 export function saveFirewallEntry(entry: FirewallEntry): void {

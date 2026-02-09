@@ -2,8 +2,7 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { loadFirewallConfig, setCachedCredentialKey } from "./config/firewalls.js";
-import { generateApiKey } from "./api/client.js";
+import { loadFirewallConfig } from "./config/firewalls.js";
 
 import { registerFirewallTools } from "./tools/firewalls.js";
 import { registerSystemTools } from "./tools/system.js";
@@ -47,36 +46,7 @@ registerLicensesTools(server);
 registerConfigTools(server);
 registerUtilityTools(server);
 
-async function resolveCredentials(): Promise<void> {
-  const apiKey = (process.env.PANOS_API_KEY ?? "").trim();
-  const host = (process.env.PANOS_HOST ?? "").trim();
-  const username = (process.env.PANOS_USERNAME ?? "").trim();
-  const password = (process.env.PANOS_PASSWORD ?? "").trim();
-
-  if (apiKey || !host) return;
-
-  if (!username || !password) {
-    if (username || password) {
-      console.error("Credentials incomplete: both username and password are required");
-    }
-    return;
-  }
-
-  try {
-    const result = await generateApiKey(host, username, password);
-    if (result.success && result.data?.key) {
-      setCachedCredentialKey(result.data.key);
-      console.error(`API key generated from credentials for ${host}`);
-    } else {
-      console.error(`Failed to generate API key: ${result.error}`);
-    }
-  } catch (error) {
-    console.error(`Failed to generate API key: ${error instanceof Error ? error.message : String(error)}`);
-  }
-}
-
 async function main() {
-  await resolveCredentials();
   const transport = new StdioServerTransport();
   await server.connect(transport);
 }
