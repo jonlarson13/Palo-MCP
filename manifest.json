@@ -1,5 +1,5 @@
 {
-  "mcpb_version": "0.1",
+  "manifest_version": "0.3",
   "name": "panos-mcp",
   "version": "1.0.0",
   "description": "MCP server for Palo Alto Networks PanOS firewalls and Panorama",
