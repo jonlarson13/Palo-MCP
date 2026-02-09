@@ -92,8 +92,7 @@
     { "name": "panorama_push_to_devices", "description": "Pushes configuration from Panorama to managed devices" },
     { "name": "run_op_command", "description": "Executes an arbitrary PanOS operational XML command" },
     { "name": "get_config_xpath", "description": "Retrieves configuration at a specific XPath location" },
-    { "name": "list_firewalls", "description": "Lists all configured firewall targets" },
-    { "name": "generate_api_key", "description": "Generates a PanOS API key using username/password credentials" }
+    { "name": "list_firewalls", "description": "Lists all configured firewall targets" }
   ],
   "user_config": {
     "host": {

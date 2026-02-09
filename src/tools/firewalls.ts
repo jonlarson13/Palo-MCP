@@ -1,7 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { getFirewallEntries, isMultiFirewall, saveFirewallEntry } from "../config/firewalls.js";
-import { generateApiKey, formatResponse } from "../api/client.js";
-import { firewallHost, username, password, saveName } from "../schemas/panos.js";
+import { getFirewallEntries, isMultiFirewall } from "../config/firewalls.js";
 
 export function registerFirewallTools(server: McpServer) {
   server.tool(
@@ -38,47 +36,6 @@ export function registerFirewallTools(server: McpServer) {
 
       return {
         content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
-      };
-    }
-  );
-
-  server.tool(
-    "generate_api_key",
-    "Generates a PanOS API key using username/password credentials. Optionally saves the firewall entry to firewalls.json for future use.",
-    {
-      host: firewallHost,
-      username,
-      password,
-      save_name: saveName,
-    },
-    async (params) => {
-      const result = await generateApiKey(params.host, params.username, params.password);
-
-      if (!result.success) {
-        return formatResponse(result);
-      }
-
-      const key = result.data.key;
-
-      if (params.save_name) {
-        try {
-          saveFirewallEntry({ name: params.save_name, host: params.host, api_key: key });
-        } catch (error) {
-          return {
-            content: [{
-              type: "text" as const,
-              text: `API key generated successfully: ${key}\n\nWarning: Failed to save to firewalls.json: ${error instanceof Error ? error.message : String(error)}`,
-            }],
-          };
-        }
-      }
-
-      const message = params.save_name
-        ? `API key generated and saved as "${params.save_name}" in firewalls.json.\n\nKey: ${key}`
-        : `API key: ${key}`;
-
-      return {
-        content: [{ type: "text" as const, text: message }],
       };
     }
   );
