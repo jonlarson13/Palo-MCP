@@ -83,32 +83,8 @@ export function getFirewallEntries(): FirewallEntry[] {
   return entries;
 }
 
-export async function resolveCredentials(): Promise<void> {
-  // Trim env vars — template variables may resolve to empty strings or whitespace
-  const apiKey = (process.env.PANOS_API_KEY ?? "").trim();
-  const host = (process.env.PANOS_HOST ?? "").trim();
-  const username = (process.env.PANOS_USERNAME ?? "").trim();
-  const password = (process.env.PANOS_PASSWORD ?? "").trim();
-
-  // If API key is already set, nothing to do
-  if (apiKey) return;
-
-  if (!host || !username || !password) {
-    if (host && !apiKey && (username || password)) {
-      console.error("Credentials incomplete: both username and password are required");
-    }
-    return;
-  }
-
-  // Dynamic import to avoid circular dependency
-  const { generateApiKey } = await import("../api/client.js");
-  const result = await generateApiKey(host, username, password);
-  if (result.success && result.data?.key) {
-    cachedCredentialKey = result.data.key;
-    console.error(`API key generated from credentials for ${host}`);
-  } else {
-    console.error(`Failed to generate API key: ${result.error}`);
-  }
+export function setCachedCredentialKey(key: string): void {
+  cachedCredentialKey = key;
 }
 
 export function saveFirewallEntry(entry: FirewallEntry): void {
