@@ -2,7 +2,9 @@
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { loadFirewallConfig } from "./config/firewalls.js";
 
+import { registerFirewallTools } from "./tools/firewalls.js";
 import { registerSystemTools } from "./tools/system.js";
 import { registerNetworkTools } from "./tools/network.js";
 import { registerSecurityTools } from "./tools/security.js";
@@ -19,12 +21,15 @@ import { registerLicensesTools } from "./tools/licenses.js";
 import { registerConfigTools } from "./tools/config.js";
 import { registerUtilityTools } from "./tools/utility.js";
 
+loadFirewallConfig();
+
 const server = new McpServer({
   name: "panos-mcp",
   version: "1.0.0",
 });
 
 // Register all tools
+registerFirewallTools(server);
 registerSystemTools(server);
 registerNetworkTools(server);
 registerSecurityTools(server);

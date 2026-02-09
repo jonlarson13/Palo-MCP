@@ -1,5 +1,6 @@
 import { XMLParser } from "fast-xml-parser";
 import { Agent, fetch } from "undici";
+import { resolveFirewall, isMultiFirewall } from "../config/firewalls.js";
 
 const xmlParser = new XMLParser({
   ignoreAttributes: false,
@@ -12,15 +13,38 @@ export interface ApiResponse {
   error?: string;
 }
 
-function getCredentials(): { host: string; apiKey: string } | null {
-  const host = process.env.PANOS_HOST;
-  const apiKey = process.env.PANOS_API_KEY;
+export interface FirewallTarget {
+  host: string;
+  apiKey: string;
+}
 
-  if (!host || !apiKey) {
-    return null;
+export function resolveTarget(firewallParam?: string): FirewallTarget | ApiResponse {
+  if (isMultiFirewall() && !firewallParam) {
+    return {
+      success: false,
+      error: "Multiple firewalls configured. The 'firewall' parameter is required — use list_firewalls to see available names.",
+    };
   }
 
-  return { host, apiKey };
+  const entry = resolveFirewall(firewallParam);
+  if (!entry) {
+    if (firewallParam) {
+      return {
+        success: false,
+        error: `Firewall '${firewallParam}' not found. Use list_firewalls to see available names.`,
+      };
+    }
+    return {
+      success: false,
+      error: "No firewall configured. Set PANOS_HOST/PANOS_API_KEY environment variables or provide a firewalls.json config file.",
+    };
+  }
+
+  return { host: entry.host, apiKey: entry.api_key };
+}
+
+export function isApiError(result: FirewallTarget | ApiResponse): result is ApiResponse {
+  return "success" in result && !(result as any).host;
 }
 
 async function makeRequest(url: string): Promise<ApiResponse> {
@@ -56,16 +80,31 @@ async function makeRequest(url: string): Promise<ApiResponse> {
   };
 }
 
-export async function executeOpCommand(cmd: string): Promise<ApiResponse> {
-  const creds = getCredentials();
-  if (!creds) {
+export async function generateApiKey(host: string, username: string, password: string): Promise<ApiResponse> {
+  const url = `https://${host}/api/?type=keygen&user=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+
+  try {
+    const result = await makeRequest(url);
+    if (result.success && result.data?.key) {
+      return { success: true, data: { key: result.data.key } };
+    }
+    return result;
+  } catch (error) {
     return {
       success: false,
-      error: "PANOS_HOST and PANOS_API_KEY environment variables must be set",
+      error: `Error connecting to firewall: ${error instanceof Error ? error.message : String(error)}`,
     };
   }
+}
 
-  const url = `https://${creds.host}/api/?type=op&cmd=${encodeURIComponent(cmd)}&key=${creds.apiKey}`;
+export async function executeOpCommand(cmd: string, target?: FirewallTarget): Promise<ApiResponse> {
+  if (!target) {
+    const resolved = resolveTarget();
+    if (isApiError(resolved)) return resolved;
+    target = resolved;
+  }
+
+  const url = `https://${target.host}/api/?type=op&cmd=${encodeURIComponent(cmd)}&key=${target.apiKey}`;
 
   try {
     return await makeRequest(url);
@@ -77,16 +116,14 @@ export async function executeOpCommand(cmd: string): Promise<ApiResponse> {
   }
 }
 
-export async function getConfig(xpath: string): Promise<ApiResponse> {
-  const creds = getCredentials();
-  if (!creds) {
-    return {
-      success: false,
-      error: "PANOS_HOST and PANOS_API_KEY environment variables must be set",
-    };
+export async function getConfig(xpath: string, target?: FirewallTarget): Promise<ApiResponse> {
+  if (!target) {
+    const resolved = resolveTarget();
+    if (isApiError(resolved)) return resolved;
+    target = resolved;
   }
 
-  const url = `https://${creds.host}/api/?type=config&action=get&xpath=${encodeURIComponent(xpath)}&key=${creds.apiKey}`;
+  const url = `https://${target.host}/api/?type=config&action=get&xpath=${encodeURIComponent(xpath)}&key=${target.apiKey}`;
 
   try {
     return await makeRequest(url);
@@ -98,16 +135,14 @@ export async function getConfig(xpath: string): Promise<ApiResponse> {
   }
 }
 
-export async function setConfig(xpath: string, element: string): Promise<ApiResponse> {
-  const creds = getCredentials();
-  if (!creds) {
-    return {
-      success: false,
-      error: "PANOS_HOST and PANOS_API_KEY environment variables must be set",
-    };
+export async function setConfig(xpath: string, element: string, target?: FirewallTarget): Promise<ApiResponse> {
+  if (!target) {
+    const resolved = resolveTarget();
+    if (isApiError(resolved)) return resolved;
+    target = resolved;
   }
 
-  const url = `https://${creds.host}/api/?type=config&action=set&xpath=${encodeURIComponent(xpath)}&element=${encodeURIComponent(element)}&key=${creds.apiKey}`;
+  const url = `https://${target.host}/api/?type=config&action=set&xpath=${encodeURIComponent(xpath)}&element=${encodeURIComponent(element)}&key=${target.apiKey}`;
 
   try {
     return await makeRequest(url);
@@ -119,16 +154,14 @@ export async function setConfig(xpath: string, element: string): Promise<ApiResp
   }
 }
 
-export async function deleteConfig(xpath: string): Promise<ApiResponse> {
-  const creds = getCredentials();
-  if (!creds) {
-    return {
-      success: false,
-      error: "PANOS_HOST and PANOS_API_KEY environment variables must be set",
-    };
+export async function deleteConfig(xpath: string, target?: FirewallTarget): Promise<ApiResponse> {
+  if (!target) {
+    const resolved = resolveTarget();
+    if (isApiError(resolved)) return resolved;
+    target = resolved;
   }
 
-  const url = `https://${creds.host}/api/?type=config&action=delete&xpath=${encodeURIComponent(xpath)}&key=${creds.apiKey}`;
+  const url = `https://${target.host}/api/?type=config&action=delete&xpath=${encodeURIComponent(xpath)}&key=${target.apiKey}`;
 
   try {
     return await makeRequest(url);
@@ -140,16 +173,14 @@ export async function deleteConfig(xpath: string): Promise<ApiResponse> {
   }
 }
 
-export async function commitConfig(cmd: string): Promise<ApiResponse> {
-  const creds = getCredentials();
-  if (!creds) {
-    return {
-      success: false,
-      error: "PANOS_HOST and PANOS_API_KEY environment variables must be set",
-    };
+export async function commitConfig(cmd: string, target?: FirewallTarget): Promise<ApiResponse> {
+  if (!target) {
+    const resolved = resolveTarget();
+    if (isApiError(resolved)) return resolved;
+    target = resolved;
   }
 
-  const url = `https://${creds.host}/api/?type=commit&cmd=${encodeURIComponent(cmd)}&key=${creds.apiKey}`;
+  const url = `https://${target.host}/api/?type=commit&cmd=${encodeURIComponent(cmd)}&key=${target.apiKey}`;
 
   try {
     return await makeRequest(url);
@@ -161,16 +192,14 @@ export async function commitConfig(cmd: string): Promise<ApiResponse> {
   }
 }
 
-export async function commitAll(cmd: string): Promise<ApiResponse> {
-  const creds = getCredentials();
-  if (!creds) {
-    return {
-      success: false,
-      error: "PANOS_HOST and PANOS_API_KEY environment variables must be set",
-    };
+export async function commitAll(cmd: string, target?: FirewallTarget): Promise<ApiResponse> {
+  if (!target) {
+    const resolved = resolveTarget();
+    if (isApiError(resolved)) return resolved;
+    target = resolved;
   }
 
-  const url = `https://${creds.host}/api/?type=commit&action=all&cmd=${encodeURIComponent(cmd)}&key=${creds.apiKey}`;
+  const url = `https://${target.host}/api/?type=commit&action=all&cmd=${encodeURIComponent(cmd)}&key=${target.apiKey}`;
 
   try {
     return await makeRequest(url);

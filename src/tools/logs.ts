@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { executeOpCommand, formatResponse } from "../api/client.js";
-import { nlogsSchema, logQuery } from "../schemas/panos.js";
+import { executeOpCommand, formatResponse, resolveTarget, isApiError } from "../api/client.js";
+import { nlogsSchema, logQuery, firewallName } from "../schemas/panos.js";
 
 export function registerLogsTools(server: McpServer) {
   server.tool(
@@ -9,15 +9,18 @@ export function registerLogsTools(server: McpServer) {
     {
       nlogs: nlogsSchema,
       query: logQuery.describe("Filter query (e.g., '( addr.src in 10.0.0.0/8 )')"),
+      firewall: firewallName,
     },
-    async ({ nlogs, query }) => {
+    async ({ nlogs, query, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
       const limit = nlogs || 20;
       let cmd = `<show><log><traffic><nlogs>${limit}</nlogs>`;
       if (query) {
         cmd += `<query>${query}</query>`;
       }
       cmd += `</traffic></log></show>`;
-      const result = await executeOpCommand(cmd);
+      const result = await executeOpCommand(cmd, target);
       return formatResponse(result);
     }
   );
@@ -28,15 +31,18 @@ export function registerLogsTools(server: McpServer) {
     {
       nlogs: nlogsSchema,
       query: logQuery.describe("Filter query (e.g., '( severity eq critical )')"),
+      firewall: firewallName,
     },
-    async ({ nlogs, query }) => {
+    async ({ nlogs, query, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
       const limit = nlogs || 20;
       let cmd = `<show><log><threat><nlogs>${limit}</nlogs>`;
       if (query) {
         cmd += `<query>${query}</query>`;
       }
       cmd += `</threat></log></show>`;
-      const result = await executeOpCommand(cmd);
+      const result = await executeOpCommand(cmd, target);
       return formatResponse(result);
     }
   );
@@ -47,15 +53,18 @@ export function registerLogsTools(server: McpServer) {
     {
       nlogs: nlogsSchema,
       query: logQuery.describe("Filter query (e.g., '( severity eq critical )')"),
+      firewall: firewallName,
     },
-    async ({ nlogs, query }) => {
+    async ({ nlogs, query, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
       const limit = nlogs || 20;
       let cmd = `<show><log><system><nlogs>${limit}</nlogs>`;
       if (query) {
         cmd += `<query>${query}</query>`;
       }
       cmd += `</system></log></show>`;
-      const result = await executeOpCommand(cmd);
+      const result = await executeOpCommand(cmd, target);
       return formatResponse(result);
     }
   );
@@ -66,15 +75,18 @@ export function registerLogsTools(server: McpServer) {
     {
       nlogs: nlogsSchema,
       query: logQuery.describe("Filter query"),
+      firewall: firewallName,
     },
-    async ({ nlogs, query }) => {
+    async ({ nlogs, query, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
       const limit = nlogs || 20;
       let cmd = `<show><log><config><nlogs>${limit}</nlogs>`;
       if (query) {
         cmd += `<query>${query}</query>`;
       }
       cmd += `</config></log></show>`;
-      const result = await executeOpCommand(cmd);
+      const result = await executeOpCommand(cmd, target);
       return formatResponse(result);
     }
   );

@@ -1,7 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { setConfig, deleteConfig, commitConfig, commitAll, formatResponse } from "../api/client.js";
-import { configXpath, deviceGroup, xmlElement, commitDescription, partialAdmin } from "../schemas/panos.js";
+import { setConfig, deleteConfig, commitConfig, commitAll, formatResponse, resolveTarget, isApiError } from "../api/client.js";
+import { configXpath, deviceGroup, xmlElement, commitDescription, partialAdmin, firewallName } from "../schemas/panos.js";
 
 export function registerConfigTools(server: McpServer) {
   server.tool(
@@ -10,9 +10,12 @@ export function registerConfigTools(server: McpServer) {
     {
       xpath: configXpath.describe("XPath to the configuration location (e.g., '/config/devices/entry[@name=\"localhost.localdomain\"]/vsys/entry[@name=\"vsys1\"]/address')"),
       element: xmlElement.describe("XML element to set at the xpath location (e.g., '<entry name=\"test-addr\"><ip-netmask>10.0.0.1/32</ip-netmask></entry>')"),
+      firewall: firewallName,
     },
-    async ({ xpath, element }) => {
-      const result = await setConfig(xpath, element);
+    async ({ xpath, element, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      const result = await setConfig(xpath, element, target);
       return formatResponse(result);
     }
   );
@@ -22,9 +25,12 @@ export function registerConfigTools(server: McpServer) {
     "[MODIFIES CONFIG] Deletes configuration at a specific XPath location on the firewall. Changes are staged in the candidate config and require a separate 'commit' to take effect.",
     {
       xpath: configXpath.describe("XPath to the configuration element to delete (e.g., '/config/devices/entry[@name=\"localhost.localdomain\"]/vsys/entry[@name=\"vsys1\"]/address/entry[@name=\"test-addr\"]')"),
+      firewall: firewallName,
     },
-    async ({ xpath }) => {
-      const result = await deleteConfig(xpath);
+    async ({ xpath, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      const result = await deleteConfig(xpath, target);
       return formatResponse(result);
     }
   );
@@ -35,8 +41,11 @@ export function registerConfigTools(server: McpServer) {
     {
       description: commitDescription.describe("Optional commit description/comment"),
       partial_admin: partialAdmin.describe("Commit only changes made by this admin user"),
+      firewall: firewallName,
     },
-    async ({ description, partial_admin }) => {
+    async ({ description, partial_admin, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
       let cmd = "<commit>";
       if (description) {
         cmd += `<description>${description}</description>`;
@@ -45,7 +54,7 @@ export function registerConfigTools(server: McpServer) {
         cmd += `<partial><admin><member>${partial_admin}</member></admin></partial>`;
       }
       cmd += "</commit>";
-      const result = await commitConfig(cmd);
+      const result = await commitConfig(cmd, target);
       return formatResponse(result);
     }
   );
@@ -57,8 +66,11 @@ export function registerConfigTools(server: McpServer) {
       device_group: deviceGroup.describe("Device group name to push to"),
       description: commitDescription.describe("Optional push description"),
       include_template: z.boolean().optional().describe("Include template stack (default: false)"),
+      firewall: firewallName,
     },
-    async ({ device_group, description, include_template }) => {
+    async ({ device_group, description, include_template, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
       let cmd = "<commit-all><shared-policy>";
       cmd += `<device-group><entry name="${device_group}"/></device-group>`;
       if (description) {
@@ -68,7 +80,7 @@ export function registerConfigTools(server: McpServer) {
         cmd += "<include-template>yes</include-template>";
       }
       cmd += "</shared-policy></commit-all>";
-      const result = await commitAll(cmd);
+      const result = await commitAll(cmd, target);
       return formatResponse(result);
     }
   );

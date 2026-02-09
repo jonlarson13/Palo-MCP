@@ -48,3 +48,32 @@ export const logQuery = z
   .max(2048)
   .optional()
   .describe("Filter query for log retrieval");
+
+export const firewallName = z
+  .string()
+  .min(1)
+  .max(63)
+  .optional()
+  .describe("Target firewall name (from firewalls.json). Required when multiple firewalls are configured; optional otherwise.");
+
+export const firewallHost = z
+  .string()
+  .min(1)
+  .describe("Firewall hostname or IP address");
+
+export const username = z
+  .string()
+  .min(1)
+  .describe("PanOS admin username");
+
+export const password = z
+  .string()
+  .min(1)
+  .describe("PanOS admin password");
+
+export const saveName = z
+  .string()
+  .min(1)
+  .max(63)
+  .optional()
+  .describe("If provided, save the firewall entry to firewalls.json under this name");

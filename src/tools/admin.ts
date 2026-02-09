@@ -1,13 +1,18 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { getConfig, formatResponse } from "../api/client.js";
+import { getConfig, formatResponse, resolveTarget, isApiError } from "../api/client.js";
+import { firewallName } from "../schemas/panos.js";
 
 export function registerAdminTools(server: McpServer) {
   server.tool(
     "get_admins",
     "[READ-ONLY] Retrieves all administrator accounts configured on the firewall. Reads config at: /config/mgt-config/users.",
-    {},
-    async () => {
-      const result = await getConfig("/config/mgt-config/users");
+    {
+      firewall: firewallName,
+    },
+    async ({ firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      const result = await getConfig("/config/mgt-config/users", target);
       return formatResponse(result);
     }
   );
@@ -15,9 +20,13 @@ export function registerAdminTools(server: McpServer) {
   server.tool(
     "get_admin_roles",
     "[READ-ONLY] Retrieves administrator role definitions and their permissions. Reads config at: /config/.../vsys/entry/admin-role.",
-    {},
-    async () => {
-      const result = await getConfig("/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/admin-role");
+    {
+      firewall: firewallName,
+    },
+    async ({ firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      const result = await getConfig("/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/admin-role", target);
       return formatResponse(result);
     }
   );
@@ -25,9 +34,13 @@ export function registerAdminTools(server: McpServer) {
   server.tool(
     "get_auth_profiles",
     "[READ-ONLY] Retrieves authentication profiles including RADIUS, LDAP, and TACACS+ configurations. Reads config at: /config/shared/authentication-profile.",
-    {},
-    async () => {
-      const result = await getConfig("/config/shared/authentication-profile");
+    {
+      firewall: firewallName,
+    },
+    async ({ firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      const result = await getConfig("/config/shared/authentication-profile", target);
       return formatResponse(result);
     }
   );

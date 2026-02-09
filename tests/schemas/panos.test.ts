@@ -8,6 +8,7 @@ import {
   commitDescription,
   partialAdmin,
   logQuery,
+  firewallName,
 } from "../../src/schemas/panos.js";
 
 describe("configXpath", () => {
@@ -96,5 +97,15 @@ describe("logQuery", () => {
 
   it.each(["x".repeat(2049), 999])("rejects %j", (v) => {
     expect(logQuery.safeParse(v).success).toBe(false);
+  });
+});
+
+describe("firewallName", () => {
+  it.each([undefined, "fw1", "a", "a".repeat(63)])("accepts %j", (v) => {
+    expect(firewallName.safeParse(v).success).toBe(true);
+  });
+
+  it.each(["", "a".repeat(64), 42, null])("rejects %j", (v) => {
+    expect(firewallName.safeParse(v).success).toBe(false);
   });
 });
