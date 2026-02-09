@@ -1,14 +1,15 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { executeOpCommand, formatResponse } from "../api/client.js";
+import { nlogsSchema } from "../schemas/panos.js";
 
 export function registerLogsTools(server: McpServer) {
   server.tool(
     "get_traffic_logs",
     "[READ-ONLY] Retrieves recent traffic logs from the firewall. Executes: show log traffic. Supports filtering by query and limiting result count.",
     {
-      nlogs: z.number().optional().describe("Number of logs to retrieve (default: 20, max: 5000)"),
-      query: z.string().optional().describe("Filter query (e.g., '( addr.src in 10.0.0.0/8 )')"),
+      nlogs: nlogsSchema,
+      query: z.string().max(2048).optional().describe("Filter query (e.g., '( addr.src in 10.0.0.0/8 )')"),
     },
     async ({ nlogs, query }) => {
       const limit = nlogs || 20;
@@ -26,8 +27,8 @@ export function registerLogsTools(server: McpServer) {
     "get_threat_logs",
     "[READ-ONLY] Retrieves recent threat logs from the firewall. Executes: show log threat. Supports filtering by query and limiting result count.",
     {
-      nlogs: z.number().optional().describe("Number of logs to retrieve (default: 20, max: 5000)"),
-      query: z.string().optional().describe("Filter query (e.g., '( severity eq critical )')"),
+      nlogs: nlogsSchema,
+      query: z.string().max(2048).optional().describe("Filter query (e.g., '( severity eq critical )')"),
     },
     async ({ nlogs, query }) => {
       const limit = nlogs || 20;
@@ -45,8 +46,8 @@ export function registerLogsTools(server: McpServer) {
     "get_system_logs",
     "[READ-ONLY] Retrieves recent system logs from the firewall. Executes: show log system. Supports filtering by query and limiting result count.",
     {
-      nlogs: z.number().optional().describe("Number of logs to retrieve (default: 20, max: 5000)"),
-      query: z.string().optional().describe("Filter query (e.g., '( severity eq critical )')"),
+      nlogs: nlogsSchema,
+      query: z.string().max(2048).optional().describe("Filter query (e.g., '( severity eq critical )')"),
     },
     async ({ nlogs, query }) => {
       const limit = nlogs || 20;
@@ -64,8 +65,8 @@ export function registerLogsTools(server: McpServer) {
     "get_config_logs",
     "[READ-ONLY] Retrieves recent configuration change logs from the firewall. Executes: show log config. Supports filtering by query and limiting result count.",
     {
-      nlogs: z.number().optional().describe("Number of logs to retrieve (default: 20, max: 5000)"),
-      query: z.string().optional().describe("Filter query"),
+      nlogs: nlogsSchema,
+      query: z.string().max(2048).optional().describe("Filter query"),
     },
     async ({ nlogs, query }) => {
       const limit = nlogs || 20;

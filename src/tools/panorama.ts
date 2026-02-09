@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { executeOpCommand, getConfig, formatResponse } from "../api/client.js";
+import { deviceGroup } from "../schemas/panos.js";
 
 export function registerPanoramaTools(server: McpServer) {
   // Managed Devices
@@ -91,7 +92,7 @@ export function registerPanoramaTools(server: McpServer) {
     "panorama_get_pre_rules",
     "[READ-ONLY] Retrieves pre-rules from a device group (rules pushed before local firewall rules). Reads config at: /config/.../device-group/entry/pre-rulebase/security/rules.",
     {
-      device_group: z.string().describe("Name of the device group"),
+      device_group: deviceGroup,
     },
     async ({ device_group }) => {
       const result = await getConfig(
@@ -105,7 +106,7 @@ export function registerPanoramaTools(server: McpServer) {
     "panorama_get_post_rules",
     "[READ-ONLY] Retrieves post-rules from a device group (rules pushed after local firewall rules). Reads config at: /config/.../device-group/entry/post-rulebase/security/rules.",
     {
-      device_group: z.string().describe("Name of the device group"),
+      device_group: deviceGroup,
     },
     async ({ device_group }) => {
       const result = await getConfig(
@@ -119,7 +120,7 @@ export function registerPanoramaTools(server: McpServer) {
     "panorama_get_device_group_nat_rules",
     "[READ-ONLY] Retrieves NAT rules from a device group (pre or post rulebase). Reads config at: /config/.../device-group/entry/{pre|post}-rulebase/nat/rules.",
     {
-      device_group: z.string().describe("Name of the device group"),
+      device_group: deviceGroup,
       rulebase: z.enum(["pre", "post"]).describe("Rulebase type: 'pre' or 'post'"),
     },
     async ({ device_group, rulebase }) => {
