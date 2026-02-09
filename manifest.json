@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "MCP server for Palo Alto Networks PanOS firewalls and Panorama",
   "author": { "name": "Apius Tech" },
+  "icon": "icon.png",
   "server": {
     "type": "node",
     "entry_point": "server/index.cjs",
