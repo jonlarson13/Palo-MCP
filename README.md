@@ -20,12 +20,17 @@ An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for in
 
 No installation needed — run directly from GitHub with `npx`.
 
-Add to your Claude Desktop MCP configuration file:
+Open your Claude Desktop MCP configuration file:
 
-| OS | Config path |
-|----|-------------|
-| macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
-| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
+```bash
+# macOS
+open "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+
+# Windows
+notepad "%APPDATA%\Claude\claude_desktop_config.json"
+```
+
+Add the `panos` server entry:
 
 ```json
 {
