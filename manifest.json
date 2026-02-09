@@ -12,7 +12,8 @@
       "args": ["${__dirname}/server/index.js"],
       "env": {
         "PANOS_HOST": "${user_config.host}",
-        "PANOS_API_KEY": "${user_config.api_key}"
+        "PANOS_API_KEY": "${user_config.api_key}",
+        "PANOS_FIREWALLS_CONFIG": "${user_config.config_dir}/firewalls.json"
       }
     }
   },
@@ -104,6 +105,13 @@
       "description": "PanOS API key (generate with: npx panos-mcp keygen)",
       "sensitive": true,
       "required": true
+    },
+    "config_dir": {
+      "type": "directory",
+      "title": "Config Directory",
+      "description": "Directory for multi-firewall configuration (firewalls.json)",
+      "required": false,
+      "default": ["${HOME}/.config/panos-mcp"]
     }
   }
 }
