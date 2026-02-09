@@ -4,7 +4,7 @@ import { executeOpCommand, formatResponse } from "../api/client.js";
 export function registerLicensesTools(server: McpServer) {
   server.tool(
     "get_licenses",
-    "Get license status and expiration dates for all features",
+    "[READ-ONLY] Retrieves license status and expiration dates for all features. Executes: request license info.",
     {},
     async () => {
       const result = await executeOpCommand("<request><license><info></info></license></request>");
@@ -14,7 +14,7 @@ export function registerLicensesTools(server: McpServer) {
 
   server.tool(
     "get_license_usage",
-    "Get license usage information including GlobalProtect users and other licensed features",
+    "[READ-ONLY] Retrieves license usage information including VM model, serial, capacity tier, and mode. Executes: show system info (extracts license fields).",
     {},
     async () => {
       const result = await executeOpCommand("<show><system><info></info></system></show>");

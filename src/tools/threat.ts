@@ -4,7 +4,7 @@ import { executeOpCommand, getConfig, formatResponse } from "../api/client.js";
 export function registerThreatTools(server: McpServer) {
   server.tool(
     "get_wildfire_status",
-    "Get WildFire cloud connection status and statistics",
+    "[READ-ONLY] Retrieves WildFire cloud connection status and statistics. Executes: show wildfire status.",
     {},
     async () => {
       const result = await executeOpCommand("<show><wildfire><status></status></wildfire></show>");
@@ -14,7 +14,7 @@ export function registerThreatTools(server: McpServer) {
 
   server.tool(
     "get_antivirus_version",
-    "Get current antivirus signature version and release date",
+    "[READ-ONLY] Retrieves current antivirus, threat, and WildFire signature versions and release dates. Executes: show system info (extracts signature fields).",
     {},
     async () => {
       const result = await executeOpCommand("<show><system><info></info></system></show>");
@@ -35,7 +35,7 @@ export function registerThreatTools(server: McpServer) {
 
   server.tool(
     "get_content_versions",
-    "Get available content update versions (antivirus, applications, threats)",
+    "[READ-ONLY] Retrieves available content update versions (antivirus, applications, threats). Executes: request content upgrade info.",
     {},
     async () => {
       const result = await executeOpCommand("<request><content><upgrade><info></info></upgrade></content></request>");
@@ -45,7 +45,7 @@ export function registerThreatTools(server: McpServer) {
 
   server.tool(
     "get_url_categories",
-    "Get predefined URL filtering categories",
+    "[READ-ONLY] Retrieves predefined URL filtering categories. Reads config at: /config/predefined/pan-url-categories.",
     {},
     async () => {
       const result = await getConfig("/config/predefined/pan-url-categories");

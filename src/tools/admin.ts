@@ -4,7 +4,7 @@ import { getConfig, formatResponse } from "../api/client.js";
 export function registerAdminTools(server: McpServer) {
   server.tool(
     "get_admins",
-    "Get all administrator accounts configured on the firewall",
+    "[READ-ONLY] Retrieves all administrator accounts configured on the firewall. Reads config at: /config/mgt-config/users.",
     {},
     async () => {
       const result = await getConfig("/config/mgt-config/users");
@@ -14,7 +14,7 @@ export function registerAdminTools(server: McpServer) {
 
   server.tool(
     "get_admin_roles",
-    "Get administrator role definitions and their permissions",
+    "[READ-ONLY] Retrieves administrator role definitions and their permissions. Reads config at: /config/.../vsys/entry/admin-role.",
     {},
     async () => {
       const result = await getConfig("/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/admin-role");
@@ -24,7 +24,7 @@ export function registerAdminTools(server: McpServer) {
 
   server.tool(
     "get_auth_profiles",
-    "Get authentication profiles including RADIUS, LDAP, TACACS+ configurations",
+    "[READ-ONLY] Retrieves authentication profiles including RADIUS, LDAP, and TACACS+ configurations. Reads config at: /config/shared/authentication-profile.",
     {},
     async () => {
       const result = await getConfig("/config/shared/authentication-profile");

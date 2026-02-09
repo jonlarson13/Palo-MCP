@@ -4,7 +4,7 @@ import { executeOpCommand, getConfig, formatResponse } from "../api/client.js";
 export function registerSecurityTools(server: McpServer) {
   server.tool(
     "get_security_rules",
-    "Get all security policy rules from the firewall",
+    "[READ-ONLY] Retrieves all security policy rules from the firewall. Reads config at: /config/.../rulebase/security/rules.",
     {},
     async () => {
       const result = await getConfig("/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/rulebase/security/rules");
@@ -14,7 +14,7 @@ export function registerSecurityTools(server: McpServer) {
 
   server.tool(
     "get_security_profiles",
-    "Get security profiles including antivirus, vulnerability, spyware, URL filtering profiles",
+    "[READ-ONLY] Retrieves security profiles including antivirus, vulnerability, spyware, and URL filtering profiles. Reads config at: /config/.../vsys/entry/profiles.",
     {},
     async () => {
       const result = await getConfig("/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/profiles");
@@ -24,7 +24,7 @@ export function registerSecurityTools(server: McpServer) {
 
   server.tool(
     "get_security_profile_groups",
-    "Get security profile groups that combine multiple security profiles",
+    "[READ-ONLY] Retrieves security profile groups that combine multiple security profiles. Reads config at: /config/.../vsys/entry/profile-group.",
     {},
     async () => {
       const result = await getConfig("/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/profile-group");
@@ -34,7 +34,7 @@ export function registerSecurityTools(server: McpServer) {
 
   server.tool(
     "get_pbf_rules",
-    "Get policy-based forwarding rules",
+    "[READ-ONLY] Retrieves policy-based forwarding (PBF) rules. Reads config at: /config/.../rulebase/pbf/rules.",
     {},
     async () => {
       const result = await getConfig("/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/rulebase/pbf/rules");
@@ -44,7 +44,7 @@ export function registerSecurityTools(server: McpServer) {
 
   server.tool(
     "get_dos_profiles",
-    "Get DoS protection profiles",
+    "[READ-ONLY] Retrieves DoS protection profiles. Reads config at: /config/.../profiles/dos-protection.",
     {},
     async () => {
       const result = await getConfig("/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/profiles/dos-protection");
@@ -54,7 +54,7 @@ export function registerSecurityTools(server: McpServer) {
 
   server.tool(
     "get_qos_rules",
-    "Get QoS policy rules",
+    "[READ-ONLY] Retrieves QoS policy rules. Reads config at: /config/.../rulebase/qos/rules.",
     {},
     async () => {
       const result = await getConfig("/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/rulebase/qos/rules");

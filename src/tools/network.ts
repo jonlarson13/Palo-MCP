@@ -4,7 +4,7 @@ import { executeOpCommand, getConfig, formatResponse } from "../api/client.js";
 export function registerNetworkTools(server: McpServer) {
   server.tool(
     "get_interfaces",
-    "Get all network interfaces with their status, IP addresses, and configuration",
+    "[READ-ONLY] Retrieves all network interfaces with their status, IP addresses, and configuration. Executes: show interface all.",
     {},
     async () => {
       const result = await executeOpCommand("<show><interface>all</interface></show>");
@@ -14,7 +14,7 @@ export function registerNetworkTools(server: McpServer) {
 
   server.tool(
     "get_zones",
-    "Get all security zones configured on the firewall",
+    "[READ-ONLY] Retrieves all security zones configured on the firewall. Reads config at: /config/.../vsys/entry/zone.",
     {},
     async () => {
       const result = await getConfig("/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/zone");
@@ -24,7 +24,7 @@ export function registerNetworkTools(server: McpServer) {
 
   server.tool(
     "get_routing_table",
-    "Get the current routing table from the firewall",
+    "[READ-ONLY] Retrieves the current routing table from the firewall. Executes: show routing route.",
     {},
     async () => {
       const result = await executeOpCommand("<show><routing><route></route></routing></show>");
@@ -34,7 +34,7 @@ export function registerNetworkTools(server: McpServer) {
 
   server.tool(
     "get_arp_table",
-    "Get the ARP table entries from the firewall",
+    "[READ-ONLY] Retrieves ARP table entries from the firewall. Executes: show arp entry all.",
     {},
     async () => {
       const result = await executeOpCommand("<show><arp><entry>all</entry></arp></show>");
@@ -44,7 +44,7 @@ export function registerNetworkTools(server: McpServer) {
 
   server.tool(
     "get_vlans",
-    "Get VLAN configuration from the firewall",
+    "[READ-ONLY] Retrieves VLAN configuration from the firewall. Reads config at: /config/.../network/vlan.",
     {},
     async () => {
       const result = await getConfig("/config/devices/entry[@name='localhost.localdomain']/network/vlan");
@@ -54,7 +54,7 @@ export function registerNetworkTools(server: McpServer) {
 
   server.tool(
     "get_dhcp_leases",
-    "Get DHCP server lease information",
+    "[READ-ONLY] Retrieves DHCP server lease information. Executes: show dhcp server lease all.",
     {},
     async () => {
       const result = await executeOpCommand("<show><dhcp><server><lease>all</lease></server></dhcp></show>");
@@ -64,7 +64,7 @@ export function registerNetworkTools(server: McpServer) {
 
   server.tool(
     "get_dns_proxy",
-    "Get DNS proxy configuration",
+    "[READ-ONLY] Retrieves DNS proxy configuration. Reads config at: /config/.../network/dns-proxy.",
     {},
     async () => {
       const result = await getConfig("/config/devices/entry[@name='localhost.localdomain']/network/dns-proxy");
