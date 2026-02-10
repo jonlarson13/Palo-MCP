@@ -76,7 +76,7 @@ async function makeRequest(url: string): Promise<ApiResponse> {
 
   return {
     success: true,
-    data: parsed.response?.result,
+    data: parsed.response?.result ?? parsed.response?.msg ?? "OK",
   };
 }
 
