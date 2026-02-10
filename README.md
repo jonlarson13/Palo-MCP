@@ -1,5 +1,7 @@
 # PanOS MCP Server
 
+> **Warning:** This server gives an AI model direct access to your firewall configuration via the PanOS API. AI models can make mistakes, misinterpret instructions, or take unintended actions that may disrupt network traffic, modify security policies, or cause outages. **Use at your own risk.** Always review AI-proposed changes before committing, use a read-only API key where possible, and never run against production firewalls without understanding the consequences.
+
 An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for interacting with Palo Alto Networks PanOS firewalls and Panorama. Provides 70+ tools across 15 modules for firewall management, monitoring, and configuration.
 
 ## Features
@@ -152,6 +154,16 @@ npm test                # run tests
 npm run start           # run the server
 npm run pack:extension  # build Desktop Extension (.mcpb)
 ```
+
+## Disclaimer
+
+This software is provided "as is", without warranty of any kind. This tool connects an AI model to live network infrastructure. AI models can hallucinate, misunderstand context, and execute unintended changes. The authors are not responsible for any damage, data loss, outages, or security incidents caused by the use of this software. You are solely responsible for any actions taken by the AI model through this server.
+
+**Recommendations:**
+- Test in a lab environment before using in production
+- Use a read-only API key for inspection tasks
+- Always review and confirm changes before committing
+- Monitor firewall logs for unexpected configuration changes
 
 ## License
 
