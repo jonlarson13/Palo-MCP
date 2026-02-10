@@ -231,6 +231,28 @@ export async function deleteConfig(xpath: string, target?: FirewallTarget): Prom
   }
 }
 
+export async function moveConfig(xpath: string, where: string, dst?: string, target?: FirewallTarget): Promise<ApiResponse> {
+  if (!target) {
+    const resolved = resolveTarget();
+    if (isApiError(resolved)) return resolved;
+    target = resolved;
+  }
+
+  let url = `https://${target.host}/api/?type=config&action=move&xpath=${encodeURIComponent(xpath)}&where=${encodeURIComponent(where)}&key=${target.apiKey}`;
+  if (dst) {
+    url += `&dst=${encodeURIComponent(dst)}`;
+  }
+
+  try {
+    return await makeRequest(url);
+  } catch (error) {
+    return {
+      success: false,
+      error: `Error connecting to firewall: ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+}
+
 export async function commitConfig(cmd: string, target?: FirewallTarget): Promise<ApiResponse> {
   if (!target) {
     const resolved = resolveTarget();

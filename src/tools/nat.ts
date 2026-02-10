@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { getConfig, setConfig, formatResponse, resolveTarget, isApiError } from "../api/client.js";
+import { getConfig, setConfig, moveConfig, formatResponse, resolveTarget, isApiError } from "../api/client.js";
 import { firewallName } from "../schemas/panos.js";
 
 function members(items: string[]): string {
@@ -83,6 +83,28 @@ export function registerNatTools(server: McpServer) {
       if (disabled !== undefined) element += `<disabled>${disabled ? "yes" : "no"}</disabled>`;
       element += `</entry>`;
       const result = await setConfig(xpath, element, target);
+      return formatResponse(result);
+    }
+  );
+
+  server.tool(
+    "move_nat_rule",
+    "[MODIFIES CONFIG] Moves a NAT policy rule to a new position in the rulebase. Rule order determines evaluation priority. Staged in candidate config — requires 'commit' to activate.",
+    {
+      name: z.string().min(1).max(63).describe("Name of the NAT rule to move"),
+      where: z.enum(["top", "bottom", "before", "after"]).describe("Position to move the rule to"),
+      destination: z.string().optional().describe("Reference rule name (required when 'where' is 'before' or 'after')"),
+      firewall: firewallName,
+    },
+    { readOnlyHint: false, destructiveHint: true },
+    async ({ name, where, destination, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      if ((where === "before" || where === "after") && !destination) {
+        return formatResponse({ success: false, error: "'destination' is required when 'where' is 'before' or 'after'" });
+      }
+      const xpath = `/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/rulebase/nat/rules/entry[@name='${name}']`;
+      const result = await moveConfig(xpath, where, destination, target);
       return formatResponse(result);
     }
   );
