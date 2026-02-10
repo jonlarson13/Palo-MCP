@@ -10,6 +10,7 @@ export function registerUtilityTools(server: McpServer) {
       command: xmlCommand.describe("XML operational command to execute (e.g., '<show><system><info></info></system></show>')"),
       firewall: firewallName,
     },
+    { readOnlyHint: false, destructiveHint: true, openWorldHint: true },
     async ({ command, firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -25,6 +26,7 @@ export function registerUtilityTools(server: McpServer) {
       xpath: configXpath.describe("XPath to the configuration element (e.g., '/config/devices/entry[@name=\"localhost.localdomain\"]/network')"),
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ xpath, firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);

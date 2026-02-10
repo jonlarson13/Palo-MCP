@@ -11,6 +11,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -25,6 +26,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -40,6 +42,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -54,6 +57,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -69,6 +73,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -83,6 +88,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -97,6 +103,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -111,6 +118,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -127,6 +135,7 @@ export function registerPanoramaTools(server: McpServer) {
       device_group: deviceGroup,
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ device_group, firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -145,6 +154,7 @@ export function registerPanoramaTools(server: McpServer) {
       device_group: deviceGroup,
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ device_group, firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -164,6 +174,7 @@ export function registerPanoramaTools(server: McpServer) {
       rulebase: z.enum(["pre", "post"]).describe("Rulebase type: 'pre' or 'post'"),
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ device_group, rulebase, firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -182,6 +193,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -196,6 +208,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -211,6 +224,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -226,6 +240,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -241,6 +256,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -256,6 +272,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -271,6 +288,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -286,6 +304,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -300,6 +319,7 @@ export function registerPanoramaTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);

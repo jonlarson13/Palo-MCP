@@ -9,6 +9,7 @@ export function registerSecurityTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -23,6 +24,7 @@ export function registerSecurityTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -37,6 +39,7 @@ export function registerSecurityTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -51,6 +54,7 @@ export function registerSecurityTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -65,6 +69,7 @@ export function registerSecurityTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
@@ -79,6 +84,7 @@ export function registerSecurityTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);

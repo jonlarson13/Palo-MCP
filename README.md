@@ -155,6 +155,27 @@ npm run start           # run the server
 npm run pack:extension  # build Desktop Extension (.mcpb)
 ```
 
+## Examples
+
+**"Show me the firewall system info"**
+
+Uses `get_firewall_info` to retrieve hostname, model, serial number, and software version.
+
+**"List all security rules on the firewall"**
+
+Uses `get_security_rules` to retrieve the full security policy rulebase.
+
+**"Create an address object for the 10.0.1.0/24 subnet called lab-network, then commit"**
+
+Uses `set_config` to create the address object in the candidate configuration, then `commit` to activate the change on the running firewall.
+
+## Privacy
+
+- **No data collection** — This extension does not collect, store, or transmit any data to third parties.
+- **Direct communication only** — All API calls go directly from your machine to your PanOS firewall or Panorama. No traffic is routed through intermediary servers.
+- **Local credential storage** — API keys are stored in your OS keychain (Desktop Extension) or in local environment variables. They are never sent anywhere other than your firewall.
+- **No telemetry or analytics** — This extension contains no tracking, telemetry, or analytics of any kind.
+
 ## Disclaimer
 
 This software is provided "as is", without warranty of any kind. This tool connects an AI model to live network infrastructure. AI models can hallucinate, misunderstand context, and execute unintended changes. The authors are not responsible for any damage, data loss, outages, or security incidents caused by the use of this software. You are solely responsible for any actions taken by the AI model through this server.

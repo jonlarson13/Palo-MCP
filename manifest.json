@@ -5,6 +5,7 @@
   "description": "Manage Palo Alto Networks firewalls and Panorama with 70+ tools — read system state, security policies, logs, VPN status, and more. Supports configuration changes with staged commits. Connect using just a hostname and API key.",
   "author": { "name": "Apius Tech" },
   "repository": { "type": "git", "url": "https://github.com/apius-tech/Palo-MCP" },
+  "privacy_policies": [{ "url": "https://github.com/apius-tech/Palo-MCP#privacy" }],
   "icon": "icon.png",
   "server": {
     "type": "node",

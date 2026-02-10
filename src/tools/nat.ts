@@ -9,6 +9,7 @@ export function registerNatTools(server: McpServer) {
     {
       firewall: firewallName,
     },
+    { readOnlyHint: true, destructiveHint: false },
     async ({ firewall }) => {
       const target = resolveTarget(firewall);
       if (isApiError(target)) return formatResponse(target);
