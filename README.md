@@ -2,7 +2,7 @@
 
 > **Warning:** This server gives an AI model direct access to your firewall configuration via the PanOS API. AI models can make mistakes, misinterpret instructions, or take unintended actions that may disrupt network traffic, modify security policies, or cause outages. **Use at your own risk.** Always review AI-proposed changes before committing, use a read-only API key where possible, and never run against production firewalls without understanding the consequences.
 
-An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for interacting with Palo Alto Networks PanOS firewalls and Panorama. Provides 70+ tools across 15 modules for firewall management, monitoring, and configuration.
+An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for interacting with Palo Alto Networks PanOS firewalls and Panorama. Provides 80+ tools across 16 modules for firewall management, monitoring, and configuration.
 
 ## Features
 
@@ -103,19 +103,20 @@ Replace `your-firewall-or-panorama` with your firewall/Panorama IP or hostname, 
 |----------|-------|-------------|
 | System | 4 | Firewall info, HA status, sessions, resources |
 | Network | 7 | Interfaces, zones, routing, ARP, VLANs, DHCP, DNS proxy |
-| Security | 6 | Security rules, profiles, profile groups, PBF, DoS, QoS |
-| Objects | 5 | Address/service objects and groups, application filters |
-| NAT | 1 | NAT rules |
+| Security | 8 | Security rules (get, add, move), profiles, profile groups, PBF, DoS, QoS |
+| Objects | 9 | Address/service objects and groups (get, add), application filters |
+| NAT | 3 | NAT rules (get, add, move) |
 | User-ID | 3 | User-IP mappings, groups, config |
 | Admin | 3 | Admins, roles, auth profiles |
 | VPN | 3 | IPSec tunnels, GlobalProtect users and config |
 | Panorama | 20 | Device groups, templates, shared objects, pre/post rules, push status, HA |
 | Logs | 4 | Traffic, threat, system, and config logs |
 | Threat | 4 | WildFire, antivirus, content versions, URL categories |
-| Certificates | 3 | Certificates, decryption rules and profiles |
+| Certificates | 5 | Certificates, decryption rules (get, add, move) and profiles |
 | Licenses | 2 | License info and usage |
 | Config | 4 | Set/delete config, commit, Panorama push |
-| Utility | 3 | Arbitrary op commands, XPath config reads, list firewalls |
+| Utility | 2 | Arbitrary op commands, XPath config reads |
+| Firewalls | 1 | List configured firewall targets |
 
 ## Safety Labels
 
