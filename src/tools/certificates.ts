@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { getConfig, setConfig, moveConfig, formatResponse, resolveTarget, isApiError } from "../api/client.js";
+import { getConfig, setConfig, deleteConfig, moveConfig, formatResponse, resolveTarget, isApiError } from "../api/client.js";
 import { firewallName } from "../schemas/panos.js";
 
 function members(items: string[]): string {
@@ -110,6 +110,42 @@ export function registerCertificatesTools(server: McpServer) {
       }
       const xpath = `/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/rulebase/decryption/rules/entry[@name='${name}']`;
       const result = await moveConfig(xpath, where, destination, target);
+      return formatResponse(result);
+    }
+  );
+
+  server.tool(
+    "delete_decryption_rule",
+    "[MODIFIES CONFIG] Deletes a decryption policy rule. Staged in candidate config — requires 'commit' to activate.",
+    {
+      name: z.string().min(1).max(63).describe("Rule name to delete"),
+      firewall: firewallName,
+    },
+    { readOnlyHint: false, destructiveHint: true },
+    async ({ name, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      const xpath = `/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/rulebase/decryption/rules/entry[@name='${name}']`;
+      const result = await deleteConfig(xpath, target);
+      return formatResponse(result);
+    }
+  );
+
+  server.tool(
+    "set_decryption_rule_disabled",
+    "[MODIFIES CONFIG] Enables or disables a decryption policy rule. Staged in candidate config — requires 'commit' to activate.",
+    {
+      name: z.string().min(1).max(63).describe("Rule name"),
+      disabled: z.boolean().describe("true to disable the rule, false to enable it"),
+      firewall: firewallName,
+    },
+    { readOnlyHint: false, destructiveHint: true },
+    async ({ name, disabled, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      const xpath = `/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/rulebase/decryption/rules/entry[@name='${name}']`;
+      const element = `<disabled>${disabled ? "yes" : "no"}</disabled>`;
+      const result = await setConfig(xpath, element, target);
       return formatResponse(result);
     }
   );

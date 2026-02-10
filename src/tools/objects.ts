@@ -1,6 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { getConfig, setConfig, formatResponse, resolveTarget, isApiError } from "../api/client.js";
+import { getConfig, setConfig, deleteConfig, formatResponse, resolveTarget, isApiError } from "../api/client.js";
 import { firewallName } from "../schemas/panos.js";
 
 function members(items: string[]): string {
@@ -169,6 +169,74 @@ export function registerObjectsTools(server: McpServer) {
       if (description) element += `<description>${description}</description>`;
       element += `</entry>`;
       const result = await setConfig(xpath, element, target);
+      return formatResponse(result);
+    }
+  );
+
+  server.tool(
+    "delete_address_object",
+    "[MODIFIES CONFIG] Deletes an address object. Staged in candidate config — requires 'commit' to activate.",
+    {
+      name: z.string().min(1).max(63).describe("Address object name to delete"),
+      firewall: firewallName,
+    },
+    { readOnlyHint: false, destructiveHint: true },
+    async ({ name, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      const xpath = `/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/address/entry[@name='${name}']`;
+      const result = await deleteConfig(xpath, target);
+      return formatResponse(result);
+    }
+  );
+
+  server.tool(
+    "delete_address_group",
+    "[MODIFIES CONFIG] Deletes an address group. Staged in candidate config — requires 'commit' to activate.",
+    {
+      name: z.string().min(1).max(63).describe("Address group name to delete"),
+      firewall: firewallName,
+    },
+    { readOnlyHint: false, destructiveHint: true },
+    async ({ name, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      const xpath = `/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/address-group/entry[@name='${name}']`;
+      const result = await deleteConfig(xpath, target);
+      return formatResponse(result);
+    }
+  );
+
+  server.tool(
+    "delete_service_object",
+    "[MODIFIES CONFIG] Deletes a service object. Staged in candidate config — requires 'commit' to activate.",
+    {
+      name: z.string().min(1).max(63).describe("Service object name to delete"),
+      firewall: firewallName,
+    },
+    { readOnlyHint: false, destructiveHint: true },
+    async ({ name, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      const xpath = `/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/service/entry[@name='${name}']`;
+      const result = await deleteConfig(xpath, target);
+      return formatResponse(result);
+    }
+  );
+
+  server.tool(
+    "delete_service_group",
+    "[MODIFIES CONFIG] Deletes a service group. Staged in candidate config — requires 'commit' to activate.",
+    {
+      name: z.string().min(1).max(63).describe("Service group name to delete"),
+      firewall: firewallName,
+    },
+    { readOnlyHint: false, destructiveHint: true },
+    async ({ name, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      const xpath = `/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/service-group/entry[@name='${name}']`;
+      const result = await deleteConfig(xpath, target);
       return formatResponse(result);
     }
   );
