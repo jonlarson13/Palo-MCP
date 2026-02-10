@@ -240,4 +240,64 @@ export function registerObjectsTools(server: McpServer) {
       return formatResponse(result);
     }
   );
+
+  // Tags
+
+  server.tool(
+    "get_tags",
+    "[READ-ONLY] Retrieves all tags defined on the firewall. Reads config at: /config/.../vsys/entry/tag.",
+    {
+      firewall: firewallName,
+    },
+    { readOnlyHint: true, destructiveHint: false },
+    async ({ firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      const result = await getConfig("/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/tag", target);
+      return formatResponse(result);
+    }
+  );
+
+  server.tool(
+    "add_tag",
+    "[MODIFIES CONFIG] Creates a tag object. Tags can be applied to rules, objects, and other configuration elements. Staged in candidate config — requires 'commit' to activate.",
+    {
+      name: z.string().min(1).max(127).describe("Tag name"),
+      color: z.enum([
+        "color1", "color2", "color3", "color4", "color5", "color6", "color7", "color8",
+        "color9", "color10", "color11", "color12", "color13", "color14", "color15", "color16"
+      ]).optional().describe("Tag color (color1=Red, color2=Green, color3=Blue, color4=Yellow, color5=Copper, color6=Orange, color7=Purple, color8=Gray, color9=Light Green, color10=Cyan, color11=Light Gray, color12=Blue Gray, color13=Lime, color14=Black, color15=Gold, color16=Brown)"),
+      comments: z.string().max(1023).optional().describe("Optional comments"),
+      firewall: firewallName,
+    },
+    { readOnlyHint: false, destructiveHint: true },
+    async ({ name, color, comments, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      const xpath = "/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/tag";
+      let element = `<entry name="${name}">`;
+      if (color) element += `<color>${color}</color>`;
+      if (comments) element += `<comments>${comments}</comments>`;
+      element += `</entry>`;
+      const result = await setConfig(xpath, element, target);
+      return formatResponse(result);
+    }
+  );
+
+  server.tool(
+    "delete_tag",
+    "[MODIFIES CONFIG] Deletes a tag object. Staged in candidate config — requires 'commit' to activate.",
+    {
+      name: z.string().min(1).max(127).describe("Tag name to delete"),
+      firewall: firewallName,
+    },
+    { readOnlyHint: false, destructiveHint: true },
+    async ({ name, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      const xpath = `/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/tag/entry[@name='${name}']`;
+      const result = await deleteConfig(xpath, target);
+      return formatResponse(result);
+    }
+  );
 }

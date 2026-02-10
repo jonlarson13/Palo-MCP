@@ -63,6 +63,31 @@ export function registerConfigTools(server: McpServer) {
   );
 
   server.tool(
+    "panorama_commit",
+    "[MODIFIES CONFIG] Commits pending configuration changes on Panorama. Use this before 'panorama_push_to_devices' to commit changes to device groups, templates, and shared objects. This commits on Panorama itself — it does NOT push to managed firewalls.",
+    {
+      description: commitDescription.describe("Optional commit description"),
+      partial_admin: partialAdmin.describe("Commit only changes made by this admin user"),
+      firewall: firewallName,
+    },
+    { readOnlyHint: false, destructiveHint: true },
+    async ({ description, partial_admin, firewall }) => {
+      const target = resolveTarget(firewall);
+      if (isApiError(target)) return formatResponse(target);
+      let cmd = "<commit>";
+      if (description) {
+        cmd += `<description>${description}</description>`;
+      }
+      if (partial_admin) {
+        cmd += `<partial><admin><member>${partial_admin}</member></admin></partial>`;
+      }
+      cmd += "</commit>";
+      const result = await commitConfig(cmd, target);
+      return formatResponse(result);
+    }
+  );
+
+  server.tool(
     "panorama_push_to_devices",
     "[MODIFIES CONFIG] Pushes configuration from Panorama to managed firewall devices. This deploys policy and object changes to production firewalls in the specified device group. This action affects live traffic on managed devices.",
     {

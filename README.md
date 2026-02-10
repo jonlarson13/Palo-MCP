@@ -2,7 +2,7 @@
 
 > **Warning:** This server gives an AI model direct access to your firewall configuration via the PanOS API. AI models can make mistakes, misinterpret instructions, or take unintended actions that may disrupt network traffic, modify security policies, or cause outages. **Use at your own risk.** Always review AI-proposed changes before committing, use a read-only API key where possible, and never run against production firewalls without understanding the consequences.
 
-An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for interacting with Palo Alto Networks PanOS firewalls and Panorama. Provides 100 tools across 16 modules for firewall management, monitoring, and configuration.
+An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for interacting with Palo Alto Networks PanOS firewalls and Panorama. Provides 116 tools across 16 modules for firewall management, monitoring, and configuration.
 
 ## Features
 
@@ -102,19 +102,19 @@ Replace `your-firewall-or-panorama` with your firewall/Panorama IP or hostname, 
 | Category | Tools | Description |
 |----------|-------|-------------|
 | System | 4 | Firewall info, HA status, sessions, resources |
-| Network | 7 | Interfaces, zones, routing, ARP, VLANs, DHCP, DNS proxy |
+| Network | 10 | Interfaces, zones, routing, ARP, VLANs, DHCP, DNS proxy, static routes (get, add, delete) |
 | Security | 14 | Security rules CRUD, profiles, profile groups, PBF rules CRUD, DoS, QoS rules CRUD |
-| Objects | 13 | Address/service objects and groups (get, add, delete), application filters |
+| Objects | 16 | Address/service objects and groups (get, add, delete), application filters, tags (get, add, delete) |
 | NAT | 5 | NAT rules (get, add, move, delete, enable/disable) |
 | User-ID | 3 | User-IP mappings, groups, config |
 | Admin | 3 | Admins, roles, auth profiles |
 | VPN | 3 | IPSec tunnels, GlobalProtect users and config |
-| Panorama | 20 | Device groups, templates, shared objects, pre/post rules, push status, HA |
+| Panorama | 29 | Device groups, templates, shared objects, pre/post rules CRUD, DG NAT rules CRUD, push status, HA |
 | Logs | 4 | Traffic, threat, system, and config logs |
 | Threat | 4 | WildFire, antivirus, content versions, URL categories |
 | Certificates | 7 | Certificates, decryption rules (get, add, move, delete, enable/disable) and profiles |
 | Licenses | 2 | License info and usage |
-| Config | 4 | Set/delete config, commit, Panorama push |
+| Config | 5 | Set/delete config, commit, Panorama commit, Panorama push |
 | Utility | 2 | Arbitrary op commands, XPath config reads |
 | Firewalls | 1 | List configured firewall targets |
 
