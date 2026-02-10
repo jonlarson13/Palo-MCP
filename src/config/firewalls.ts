@@ -19,6 +19,10 @@ const firewallConfigSchema = z.object({
   firewalls: z.array(firewallEntrySchema).min(1),
 });
 
+function sanitizeHost(host: string): string {
+  return host.replace(/^https?:\/\//, "").replace(/\/+$/, "").trim();
+}
+
 let entries: FirewallEntry[] = [];
 
 const defaultConfigPath = join(homedir(), ".config", "panos-mcp", "firewalls.json");
@@ -40,7 +44,7 @@ export function loadFirewallConfig(): void {
   }
 
   const parsed = firewallConfigSchema.parse(JSON.parse(raw));
-  entries = parsed.firewalls;
+  entries = parsed.firewalls.map((e) => ({ ...e, host: sanitizeHost(e.host) }));
 }
 
 export function resolveFirewall(name?: string): FirewallEntry | null {
@@ -60,7 +64,7 @@ export function resolveFirewall(name?: string): FirewallEntry | null {
   }
 
   // No config entries — fall back to env vars
-  const host = (process.env.PANOS_HOST ?? "").trim();
+  const host = sanitizeHost(process.env.PANOS_HOST ?? "");
   const api_key = (process.env.PANOS_API_KEY ?? "").trim();
   if (host && api_key) {
     return { name: "env", host, api_key };
@@ -78,6 +82,7 @@ export function getFirewallEntries(): FirewallEntry[] {
 }
 
 export function saveFirewallEntry(entry: FirewallEntry): void {
+  entry = { ...entry, host: sanitizeHost(entry.host) };
   const configPath = getConfigPath();
   mkdirSync(dirname(configPath), { recursive: true });
 
