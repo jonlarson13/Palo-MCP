@@ -1,7 +1,7 @@
 {
   "manifest_version": "0.3",
   "name": "panos-mcp",
-  "version": "1.3.8",
+  "version": "1.3.9",
   "description": "Manage Palo Alto Networks firewalls and Panorama with 70+ tools — read system state, security policies, logs, VPN status, and more. Supports configuration changes with staged commits. Connect using just a hostname and API key.",
   "author": { "name": "Apius Tech" },
   "repository": { "type": "git", "url": "https://github.com/apius-tech/Palo-MCP" },
