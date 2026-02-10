@@ -116,6 +116,64 @@ export async function executeOpCommand(cmd: string, target?: FirewallTarget): Pr
   }
 }
 
+export async function executeLogQuery(
+  logType: string,
+  nlogs: number,
+  query: string | undefined,
+  target: FirewallTarget
+): Promise<ApiResponse> {
+  // Step 1: Submit log query (type=log)
+  let url = `https://${target.host}/api/?type=log&log-type=${encodeURIComponent(logType)}&nlogs=${nlogs}&key=${target.apiKey}`;
+  if (query) {
+    url += `&query=${encodeURIComponent(query)}`;
+  }
+
+  let submitResult: ApiResponse;
+  try {
+    submitResult = await makeRequest(url);
+  } catch (error) {
+    return {
+      success: false,
+      error: `Error submitting log query: ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+
+  if (!submitResult.success) return submitResult;
+
+  const jobId = submitResult.data?.job;
+  if (!jobId) {
+    return { success: false, error: "No job ID returned from log query" };
+  }
+
+  // Step 2: Poll for results (type=log&action=get)
+  const pollUrl = `https://${target.host}/api/?type=log&action=get&job-id=${jobId}&key=${target.apiKey}`;
+  const maxAttempts = 30;
+  const pollIntervalMs = 1000;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+
+    let pollResult: ApiResponse;
+    try {
+      pollResult = await makeRequest(pollUrl);
+    } catch (error) {
+      return {
+        success: false,
+        error: `Error polling log results: ${error instanceof Error ? error.message : String(error)}`,
+      };
+    }
+
+    if (!pollResult.success) return pollResult;
+
+    const status = pollResult.data?.job?.status || pollResult.data?.log?.logs?.["@_progress"];
+    if (status === "FIN" || pollResult.data?.log?.logs?.["@_progress"] === "100") {
+      return { success: true, data: pollResult.data?.log?.logs };
+    }
+  }
+
+  return { success: false, error: `Log query timed out after ${maxAttempts} seconds (job ${jobId})` };
+}
+
 export async function getConfig(xpath: string, target?: FirewallTarget): Promise<ApiResponse> {
   if (!target) {
     const resolved = resolveTarget();
