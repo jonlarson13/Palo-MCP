@@ -97,6 +97,26 @@ claude mcp add panos -- npx -y github:apius-tech/Palo-MCP \
 
 Replace `your-firewall-or-panorama` with your firewall/Panorama IP or hostname, and `your-api-key` with your PanOS API key.
 
+## Multiple firewalls
+
+For managing more than one firewall or Panorama (e.g. across sites), create `~/.config/panos-mcp/firewalls.json`:
+
+```json
+{
+  "firewalls": [
+    { "name": "hq-fw",     "host": "fw-hq.example.com",     "api_key": "..." },
+    { "name": "branch-fw", "host": "fw-branch.example.com", "api_key": "..." },
+    { "name": "panorama",  "host": "panorama.example.com",  "api_key": "..." }
+  ]
+}
+```
+
+Override the path with `PANOS_FIREWALLS_CONFIG=/custom/path.json` if needed. `name` is the identifier you pass to tools (max 63 chars); `host` may include or omit the `https://` prefix.
+
+When multiple entries are configured, every tool accepts a `firewall: <name>` parameter — required in multi-mode, optional when a single entry or `PANOS_HOST`/`PANOS_API_KEY` env vars are used. Ask the model to call `list_firewalls` to see which targets are configured and which mode the server is in.
+
+> **Security note:** `firewalls.json` stores API keys in plaintext on disk. Restrict the file (`chmod 600 ~/.config/panos-mcp/firewalls.json`) and prefer read-only API keys. The Desktop Extension single-firewall path continues to use the OS keychain via Claude Desktop.
+
 ## Tool Categories
 
 | Category | Tools | Description |
@@ -174,7 +194,7 @@ Uses `set_config` to create the address object in the candidate configuration, t
 
 - **No data collection** — This extension does not collect, store, or transmit any data to third parties.
 - **Direct communication only** — All API calls go directly from your machine to your PanOS firewall or Panorama. No traffic is routed through intermediary servers.
-- **Local credential storage** — API keys are stored in your OS keychain (Desktop Extension) or in local environment variables. They are never sent anywhere other than your firewall.
+- **Local credential storage** — API keys are stored in your OS keychain (Desktop Extension), in local environment variables, or in `~/.config/panos-mcp/firewalls.json` (multi-firewall mode, plaintext — protect with filesystem permissions). They are never sent anywhere other than your firewall.
 - **No telemetry or analytics** — This extension contains no tracking, telemetry, or analytics of any kind.
 
 ## Disclaimer
