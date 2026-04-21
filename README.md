@@ -223,6 +223,10 @@ This software is provided "as is", without warranty of any kind. This tool conne
 - Always review and confirm changes before committing
 - Monitor firewall logs for unexpected configuration changes
 
+## Security
+
+To report a security vulnerability, please [open a GitHub issue](https://github.com/apius-tech/Palo-MCP/issues/new?labels=security&title=Security+vulnerability) with the `security` label. We will investigate and respond promptly.
+
 ## License
 
 ISC
