@@ -1,5 +1,11 @@
 # PanOS MCP Server
 
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+[![npm version](https://img.shields.io/npm/v/panos-mcp)](https://www.npmjs.com/package/panos-mcp)
+[![GitHub stars](https://img.shields.io/github/stars/apius-tech/Palo-MCP)](https://github.com/apius-tech/Palo-MCP/stargazers)
+[![Tests](https://img.shields.io/badge/tests-85%20passing-brightgreen)](https://github.com/apius-tech/Palo-MCP/actions)
+[![GitHub release](https://img.shields.io/github/v/release/apius-tech/Palo-MCP)](https://github.com/apius-tech/Palo-MCP/releases/latest)
+
 > **Warning:** This server gives an AI model direct access to your firewall configuration via the PanOS API. AI models can make mistakes, misinterpret instructions, or take unintended actions that may disrupt network traffic, modify security policies, or cause outages. **Use at your own risk.** Always review AI-proposed changes before committing, use a read-only API key where possible, and never run against production firewalls without understanding the consequences.
 
 An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for interacting with Palo Alto Networks PanOS firewalls and Panorama. Provides 116 tools across 16 modules for firewall management, monitoring, and configuration.
