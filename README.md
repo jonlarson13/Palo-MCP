@@ -44,7 +44,9 @@ Talk to your firewall in plain English. Some examples:
 
 ## Quick Start
 
-### Claude Desktop — Desktop Extension (recommended)
+> **Single firewall vs. multi-firewall:** The Desktop Extension supports **one firewall** configured at install time. For managing multiple firewalls or Panorama instances simultaneously, use the npx or Claude Code CLI installation with the `panos-keygen` setup described in [Multiple firewalls](#multiple-firewalls).
+
+### Claude Desktop — Desktop Extension (single firewall)
 
 1. Download the latest `panos-mcp.mcpb` from [Releases](https://github.com/apius-tech/Palo-MCP/releases)
 2. Double-click the file — Claude Desktop opens an install dialog
@@ -52,7 +54,7 @@ Talk to your firewall in plain English. Some examples:
 
 The API key is stored securely in your OS keychain, not in plaintext config files.
 
-### Claude Desktop — npx
+### Claude Desktop — npx (single or multiple firewalls)
 
 Add to your `claude_desktop_config.json`:
 
