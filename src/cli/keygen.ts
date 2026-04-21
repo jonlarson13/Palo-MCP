@@ -18,20 +18,18 @@ function parseArgs(argv: string[]): { host?: string; user?: string; name?: strin
 
 function readPassword(prompt: string): Promise<string> {
   return new Promise((resolve) => {
-    const rl = createInterface({ input: process.stdin, output: process.stderr });
-
-    // Disable echo for password input
     if (process.stdin.isTTY) {
       process.stderr.write(prompt);
       process.stdin.setRawMode(true);
+      process.stdin.resume();
       let password = "";
       const onData = (ch: Buffer) => {
         const c = ch.toString();
-        if (c === "\n" || c === "\r") {
+        if (c === "\n" || c === "\r" || c === "\u0004") {
           process.stdin.setRawMode(false);
+          process.stdin.pause();
           process.stdin.removeListener("data", onData);
           process.stderr.write("\n");
-          rl.close();
           resolve(password);
         } else if (c === "\u0003") {
           // Ctrl+C
@@ -51,6 +49,7 @@ function readPassword(prompt: string): Promise<string> {
       process.stdin.on("data", onData);
     } else {
       // Non-TTY: read line normally (e.g. piped input)
+      const rl = createInterface({ input: process.stdin, output: process.stderr });
       rl.question(prompt, (answer) => {
         rl.close();
         resolve(answer);
