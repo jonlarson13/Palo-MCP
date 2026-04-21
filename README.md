@@ -1,20 +1,38 @@
 # PanOS MCP Server
 
 [![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
-[![npm version](https://img.shields.io/npm/v/panos-mcp)](https://www.npmjs.com/package/panos-mcp)
 [![GitHub stars](https://img.shields.io/github/stars/apius-tech/Palo-MCP)](https://github.com/apius-tech/Palo-MCP/stargazers)
 [![Tests](https://img.shields.io/badge/tests-85%20passing-brightgreen)](https://github.com/apius-tech/Palo-MCP/actions)
 [![GitHub release](https://img.shields.io/github/v/release/apius-tech/Palo-MCP)](https://github.com/apius-tech/Palo-MCP/releases/latest)
 
+**Control your Palo Alto Networks firewall with AI.** PanOS MCP is an [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that connects AI assistants — Claude, Cursor, and others — directly to PAN-OS firewalls and Panorama via the PAN-OS XML API. Ask questions, inspect policies, and make configuration changes in plain English instead of navigating the GUI or writing API scripts.
+
+Supports **PA-Series firewalls** (PA-220, PA-415, PA-440, PA-445, PA-450, PA-460, PA-1400, PA-3400, PA-5400, PA-7500 and more), **VM-Series**, **CN-Series**, and **Panorama** — any device running PAN-OS with API access enabled.
+
 > **Warning:** This server gives an AI model direct access to your firewall configuration via the PanOS API. AI models can make mistakes, misinterpret instructions, or take unintended actions that may disrupt network traffic, modify security policies, or cause outages. **Use at your own risk.** Always review AI-proposed changes before committing, use a read-only API key where possible, and never run against production firewalls without understanding the consequences.
 
-An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server for interacting with Palo Alto Networks PanOS firewalls and Panorama. Provides 116 tools across 16 modules for firewall management, monitoring, and configuration.
+**116 tools across 16 modules** covering firewall management, monitoring, and configuration changes — all from within your AI assistant.
+
+## What you can do
+
+Talk to your firewall in plain English. Some examples:
+
+- *"Show me all security rules that allow traffic from the internet to the DMZ"*
+- *"Which GlobalProtect users are currently connected?"*
+- *"Create an address object for 10.10.0.0/24 called corp-network and add it to the allow-internal group"*
+- *"Check HA status — is the standby firewall in sync?"*
+- *"Show me the last 50 threat log entries"*
+- *"Move the block-social-media rule above the allow-web rule and commit"*
+- *"List all IPSec tunnels and their current state"*
+- *"What software version is running on each managed device in Panorama?"*
 
 ## Features
 
 - **Read-only inspection** of firewall state, policies, objects, logs, and more
 - **Configuration management** via XPath-based set/delete with staged commits
 - **Panorama support** for centralized management of device groups, templates, and shared objects
+- **Multi-firewall mode** — manage multiple PA-Series devices or Panorama instances simultaneously
+- **Secure credential storage** — API keys stored in the OS keychain, never in plaintext
 - **Input validation** with Zod schemas for early error detection
 - **Safety labels** on every tool: `[READ-ONLY]`, `[MODIFIES CONFIG]`, or `[ADVANCED]`
 
@@ -58,25 +76,6 @@ Config file location: **macOS** `~/Library/Application Support/Claude/claude_des
 ### Cursor
 
 Open Cursor Settings (Ctrl+Shift+J) → MCP → Add new MCP server, or add to `~/.cursor/mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "panos": {
-      "command": "npx",
-      "args": ["-y", "github:apius-tech/Palo-MCP"],
-      "env": {
-        "PANOS_HOST": "your-firewall-or-panorama",
-        "PANOS_API_KEY": "your-api-key"
-      }
-    }
-  }
-}
-```
-
-### Windsurf
-
-Add to `~/.codeium/windsurf/mcp_config.json`:
 
 ```json
 {
