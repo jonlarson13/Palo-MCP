@@ -47,6 +47,13 @@ export function isApiError(result: FirewallTarget | ApiResponse): result is ApiR
   return "success" in result && !(result as any).host;
 }
 
+function connectError(error: unknown): string {
+  const msg = error instanceof Error ? error.message : String(error);
+  const cause = error instanceof Error && error.cause;
+  const causeStr = cause instanceof Error ? cause.message : cause ? String(cause) : null;
+  return `Error connecting to firewall: ${msg}${causeStr ? ` (${causeStr})` : ""}`;
+}
+
 async function makeRequest(url: string): Promise<ApiResponse> {
   const agent = new Agent({
     connect: { rejectUnauthorized: false },
@@ -92,7 +99,7 @@ export async function generateApiKey(host: string, username: string, password: s
   } catch (error) {
     return {
       success: false,
-      error: `Error connecting to firewall: ${error instanceof Error ? error.message : String(error)}`,
+      error: connectError(error),
     };
   }
 }
@@ -111,7 +118,7 @@ export async function executeOpCommand(cmd: string, target?: FirewallTarget): Pr
   } catch (error) {
     return {
       success: false,
-      error: `Error connecting to firewall: ${error instanceof Error ? error.message : String(error)}`,
+      error: connectError(error),
     };
   }
 }
@@ -188,7 +195,7 @@ export async function getConfig(xpath: string, target?: FirewallTarget): Promise
   } catch (error) {
     return {
       success: false,
-      error: `Error connecting to firewall: ${error instanceof Error ? error.message : String(error)}`,
+      error: connectError(error),
     };
   }
 }
@@ -207,7 +214,7 @@ export async function setConfig(xpath: string, element: string, target?: Firewal
   } catch (error) {
     return {
       success: false,
-      error: `Error connecting to firewall: ${error instanceof Error ? error.message : String(error)}`,
+      error: connectError(error),
     };
   }
 }
@@ -226,7 +233,7 @@ export async function deleteConfig(xpath: string, target?: FirewallTarget): Prom
   } catch (error) {
     return {
       success: false,
-      error: `Error connecting to firewall: ${error instanceof Error ? error.message : String(error)}`,
+      error: connectError(error),
     };
   }
 }
@@ -248,7 +255,7 @@ export async function moveConfig(xpath: string, where: string, dst?: string, tar
   } catch (error) {
     return {
       success: false,
-      error: `Error connecting to firewall: ${error instanceof Error ? error.message : String(error)}`,
+      error: connectError(error),
     };
   }
 }
@@ -267,7 +274,7 @@ export async function commitConfig(cmd: string, target?: FirewallTarget): Promis
   } catch (error) {
     return {
       success: false,
-      error: `Error connecting to firewall: ${error instanceof Error ? error.message : String(error)}`,
+      error: connectError(error),
     };
   }
 }
@@ -286,7 +293,7 @@ export async function commitAll(cmd: string, target?: FirewallTarget): Promise<A
   } catch (error) {
     return {
       success: false,
-      error: `Error connecting to firewall: ${error instanceof Error ? error.message : String(error)}`,
+      error: connectError(error),
     };
   }
 }
