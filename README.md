@@ -75,6 +75,14 @@ Add to your `claude_desktop_config.json`:
 
 Config file location: **macOS** `~/Library/Application Support/Claude/claude_desktop_config.json` · **Windows** `%APPDATA%\Claude\claude_desktop_config.json`
 
+### Claude Code (CLI)
+
+```bash
+claude mcp add panos -- npx -y github:apius-tech/Palo-MCP \
+  --env PANOS_HOST=your-firewall-or-panorama \
+  --env PANOS_API_KEY=your-api-key
+```
+
 ### Cursor
 
 Open Cursor Settings (Ctrl+Shift+J) → MCP → Add new MCP server, or add to `~/.cursor/mcp.json`:
@@ -92,14 +100,6 @@ Open Cursor Settings (Ctrl+Shift+J) → MCP → Add new MCP server, or add to `~
     }
   }
 }
-```
-
-### Claude Code (CLI)
-
-```bash
-claude mcp add panos -- npx -y github:apius-tech/Palo-MCP \
-  --env PANOS_HOST=your-firewall-or-panorama \
-  --env PANOS_API_KEY=your-api-key
 ```
 
 Replace `your-firewall-or-panorama` with your firewall/Panorama IP or hostname, and `your-api-key` with your PanOS API key.
