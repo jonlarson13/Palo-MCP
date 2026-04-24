@@ -3,6 +3,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { loadFirewallConfig } from "./config/firewalls.js";
+import { describeProxy } from "./api/proxy.js";
 
 import { registerFirewallTools } from "./tools/firewalls.js";
 import { registerSystemTools } from "./tools/system.js";
@@ -46,6 +47,10 @@ registerUtilityTools(server);
 
 async function main() {
   await loadFirewallConfig();
+  const proxy = describeProxy();
+  if (proxy) {
+    console.error(`PanOS proxy: ${proxy}`);
+  }
   const transport = new StdioServerTransport();
   await server.connect(transport);
 }
