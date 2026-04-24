@@ -175,6 +175,34 @@ curl -k 'https://YOUR-FIREWALL/api/?type=keygen&user=admin&password=YOUR-PASSWOR
 
 See [PanOS documentation](https://docs.paloaltonetworks.com/pan-os/11-1/pan-os-panorama-api/get-started-with-the-pan-os-xml-api/get-your-api-key) for details.
 
+## Proxy support
+
+If your firewall is reachable only via a proxy (management network behind a jump host, remote access via SOCKS5, corporate HTTP proxy), set one of the following environment variables before starting the server:
+
+| Variable | Purpose |
+|---|---|
+| `PANOS_PROXY` | **Explicit override.** Used regardless of `NO_PROXY`. Recommended for MCP deployments. |
+| `HTTPS_PROXY` / `https_proxy` | Standard — same semantics as most HTTP clients. |
+| `HTTP_PROXY` / `http_proxy` | Fallback. |
+| `ALL_PROXY` / `all_proxy` | Fallback (common for SOCKS). |
+| `NO_PROXY` / `no_proxy` | Comma-separated list of hostnames/suffixes to bypass. `*` disables proxying entirely. Ignored when `PANOS_PROXY` is set. |
+
+Supported URL schemes:
+
+- `http://[user:pass@]host:port` — HTTP CONNECT proxy
+- `https://[user:pass@]host:port` — HTTPS CONNECT proxy
+- `socks5://[user:pass@]host:port` — SOCKS5, **client-side** DNS
+- `socks5h://[user:pass@]host:port` — SOCKS5, **proxy-side** DNS (use this when the firewall hostname only resolves on the far side of the proxy)
+- `socks4://[user@]host:port` / `socks4a://[user@]host:port`
+
+Example — SOCKS5 with remote DNS:
+
+```bash
+export PANOS_PROXY=socks5h://10.0.1.168:2080
+```
+
+Self-signed firewall certificates are accepted through the proxy tunnel (the server already disables cert validation for the PanOS target).
+
 ## Development
 
 ```bash

@@ -1,6 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
-import { Agent, fetch } from "undici";
+import { fetch } from "undici";
 import { resolveFirewall, isMultiFirewall } from "../config/firewalls.js";
+import { buildDispatcher } from "./proxy.js";
 
 const xmlParser = new XMLParser({
   ignoreAttributes: false,
@@ -55,13 +56,11 @@ function connectError(error: unknown): string {
 }
 
 async function makeRequest(url: string): Promise<ApiResponse> {
-  const agent = new Agent({
-    connect: { rejectUnauthorized: false },
-  });
+  const dispatcher = buildDispatcher(url);
 
   const response = await fetch(url, {
     method: "GET",
-    dispatcher: agent,
+    dispatcher,
   });
 
   if (!response.ok) {
