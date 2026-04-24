@@ -1,7 +1,7 @@
 import { XMLParser } from "fast-xml-parser";
 import { fetch } from "undici";
 import { resolveFirewall, isMultiFirewall } from "../config/firewalls.js";
-import { buildDispatcher } from "./proxy.js";
+import { buildDispatcher, describeProxy } from "./proxy.js";
 
 const xmlParser = new XMLParser({
   ignoreAttributes: false,
@@ -52,7 +52,9 @@ function connectError(error: unknown): string {
   const msg = error instanceof Error ? error.message : String(error);
   const cause = error instanceof Error && error.cause;
   const causeStr = cause instanceof Error ? cause.message : cause ? String(cause) : null;
-  return `Error connecting to firewall: ${msg}${causeStr ? ` (${causeStr})` : ""}`;
+  const proxy = describeProxy();
+  const proxyStr = proxy ? ` [via ${proxy}]` : "";
+  return `Error connecting to firewall: ${msg}${causeStr ? ` (${causeStr})` : ""}${proxyStr}`;
 }
 
 async function makeRequest(url: string): Promise<ApiResponse> {
